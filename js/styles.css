@@ -1,0 +1,241 @@
+        body {
+            margin: 0;
+            height: 100vh;
+            font-family: "Noto Serif SC", serif;
+            background-color: #fdf6e3;
+            overflow: hidden;
+        }
+
+
+
+        .background img {
+            position: absolute;
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+            opacity: 1;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: -1;
+        }
+
+        .preview {
+            position: fixed;
+            top: 42%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80vh;
+            height: 80vh;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            display: none;
+            z-index: 9;
+            pointer-events: none;
+        }
+
+        .poem-line {
+            position: fixed;
+            bottom: 22vh;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 5vh;
+            color: #333;
+            font-family: "Noto Serif SC", serif;
+            text-align: center;
+            white-space: pre-wrap;
+            z-index: 2;
+            max-width: 90vw;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 1vh 2vh;
+            border-radius: 2vh;
+        }
+
+        #poem-line {
+            position: absolute;
+            left: 85%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            font-family: "Noto Serif SC", serif;
+            text-align: center;
+            font-size: 10vh;
+            height: 11vh;
+            padding: 1vh 2vh;
+            border-radius: 1vh;
+            white-space: nowrap;
+            z-index: 2;
+            pointer-events: none;
+            display: none;
+            /* 默认隐藏 */
+        }
+
+        #poemT-line {
+            position: absolute;
+            left: 85%;
+            top: 70%;
+            /* 稍微低于诗句位置，避免重叠 */
+            transform: translate(-50%, -50%);
+            font-family: "Noto Serif SC", serif;
+            text-align: center;
+            font-size: 3.5vh;
+            width: 40vh;
+            padding: 1vh 2vh;
+            border-radius: 1vh;
+            background-color: rgba(255, 255, 255, 0.8);
+            /* 半透明背景提升可读性 */
+            color: #333;
+            white-space: normal;
+            /* 允许换行显示完整注释 */
+            z-index: 2;
+            /* 略低于诗句，避免遮挡 */
+            pointer-events: none;
+            display: none;
+            /* 默认隐藏 */
+            box-shadow: 0 0 1vh rgba(0, 0, 0, 0.2);
+            /* 轻微阴影增强层次感 */
+        }
+
+
+        .highlight {
+            background-color: rgba(0, 0, 0, 0.1);
+            font-weight: bold;
+            color: rgb(255, 153, 0);
+            text-decoration: underline;
+            border-radius: 0.5vh;
+            padding: 0.2vh 0.4vh;
+            display: inline-block;
+        }
+
+        .thumb-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            height: 21vh;
+            width: 100%;
+            display: flex;
+            overflow-x: auto;
+            align-items: center;
+            padding: 1vh;
+            background-color: #fdf6e3;
+            box-sizing: border-box;
+            z-index: 3;
+            user-select: none;
+            overflow: hidden;
+        }
+
+        .thumb-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0 0.5vh;
+        }
+
+
+        .char-label {
+            font-size: 2vh;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 0.5vh;
+            text-align: center;
+            user-select: none;
+        }
+
+        .thumb-bar img {
+            height: 16vh;
+            object-fit: contain;
+            cursor: grab;
+            transition: transform 0.2s;
+            user-drag: none;
+        }
+
+        .thumb-bar img:hover {
+            transform: scale(1.2);
+        }
+
+        .filename {
+            font-size: 2vh;
+            color: #ff0000;
+            margin-top: 0.3vh;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+            z-index: 4;
+        }
+
+        .overlay-box {
+            position: absolute;
+            border: 2px solid red;
+            background-color: rgba(255, 0, 0, 0.5);
+            color: rgb(255, 255, 255);
+            font-size: 1.5vh;
+            font-weight: bold;
+            text-align: center;
+            opacity: 0;
+            pointer-events: auto;
+            transition: opacity 0.3s ease;
+            z-index: 99;
+        }
+
+        .overlay-box:hover {
+            opacity: 1;
+            z-index: 99;
+        }
+
+        #box-preview {
+            position: fixed;
+            width: 85vh;
+            height: 85vh;
+            pointer-events: none;
+            z-index: 999;
+            display: none;
+        }
+
+        #box-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        #box-preview .char-label {
+            position: absolute;
+            top: 20%;
+            left: 0;
+            transform: translate(-50%, -50%);
+            font-size: 4vh;
+            font-weight: bold;
+            color: #333;
+            background: rgba(255, 255, 255, 0.6);
+            padding: 0.5vh 1vh;
+            border-radius: 0.5vh;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+
+
+
+        .ui-buttons {
+            position: fixed;
+            bottom: 20vh;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 2vw;
+            z-index: 3;
+            pointer-events: auto;
+        }
+
+        .ui-buttons button {
+            background-color: rgba(219, 219, 219, 0.5);
+            color: #291b00;
+            border: none;
+            padding: 1vh 2vh;
+            font-size: 1.5vh;
+            border-radius: 0.5vh;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .ui-buttons button:hover {
+            background-color: rgba(172, 172, 172, 0.479);
+        }

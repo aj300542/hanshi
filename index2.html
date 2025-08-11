@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>寒食帖字图展示</title>
+    <link rel="stylesheet" href="js/styles.css">
+    <style>
+        .background {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            position: relative;
+            padding-top: 0;
+            margin-top: 0;
+        }
+
+        .image-wrapper {
+            position: relative;
+            width: 75%;
+        }
+
+        .image-wrapper img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+
+        #poem-line {
+            position: absolute;
+            left: 85%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            font-family: "Noto Serif SC", serif;
+            text-align: center;
+            font-size: 6vh;
+            height: 11vh;
+            padding: 1vh 2vh;
+            border-radius: 1vh;
+            white-space: nowrap;
+            z-index: 999;
+            pointer-events: none;
+            display: none;
+            /* 默认隐藏 */
+        }
+    </style>
+</head>
+
+<body>
+    <div class="background">
+        <div class="image-wrapper">
+            <img src="wufo2.jpg" alt="背景图" />
+        </div>
+    </div>
+    <div id="box-preview"></div>
+
+
+    <div class="preview" id="preview"></div>
+    <div class="poem-line" id="poem-line"></div>
+    <div id="poemT-line"></div>
+    <div class="thumb-bar" id="thumb-bar"></div>
+    <div class="ui-buttons">
+        <div class="left-buttons">
+            <button id="about-button">aj300542</button>
+        </div>
+        <div class="right-buttons">
+            <button id="home">苏轼寒食帖</button>
+            <button id="aj300">捐赠</button>
+        </div>
+    </div>
+    <script>
+        const charsPath = "chars2/";
+        const imgPath = "chars2/";
+        const boxImgPath = "chars2/";
+        const txtPath = "chars2/txt.json";
+        const wufoPath = "chars2/wufo.json";
+        const originalWidth = 3503;
+        const originalHeight = 1920;
+
+    </script>
+    <script>
+
+    </script>
+
+    <script>
+        // 打开 aj300542 的 GitHub 页面（新标签页）
+        document.getElementById("about-button").addEventListener("click", () => {
+            window.open("https://aj300542.github.io/", "_blank");
+        });
+
+        // 跳转到 index2.html（题苏轼寒食帖跋）
+        document.getElementById("home").addEventListener("click", () => {
+            window.location.href = "index.html";
+        });
+
+        document.getElementById("aj300").addEventListener("click", () => {
+            window.open("https://aj300542.github.io/", "_blank");
+        });
+    </script>
+    <script src="js/txt.js"></script>
+    <script src="js/chars.js"></script>
+    <script src="js/control.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>寒食帖字图展示</title>
+    <link rel="stylesheet" href="js/styles.css">
+    <style>
+        .background {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            position: relative;
+            padding-top: 0;
+            margin-top: 0;
+        }
+
+        .image-wrapper {
+            position: relative;
+            width: 100%;
+        }
+
+        .image-wrapper img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+
+        .portrait-container {
+            position: fixed;
+            bottom: 25%;
+            left: 3.5vw;
+            width: 8vw;
+            height: auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+
+            pointer-events: none;
+        }
+
+        .portrait-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .portrait-container.hidden {
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s ease;
+        }
+
+        .portrait-container.visible {
+            opacity: 1;
+            visibility: visible;
+            transition: opacity 0.5s ease;
+        }
+
+        #jpgname {
+            margin-top: 1vh;
+            font-size: 1.8vh;
+            color: #333;
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 0.5vh 1vh;
+            border-radius: 0.5vh;
+            opacity: 0.64;
+            transition: opacity 1s ease;
+        }
+    </style>
+
+<body>
+    <div class="background">
+        <div class="image-wrapper">
+            <img src="zitie2.jpg" alt="背景图" />
+        </div>
+    </div>
+    <div id="box-preview"></div>
+    <div class="preview" id="preview"></div>
+    <div class="poem-line" id="poem-line"></div>
+    <div id="poemT-line"></div>
+    <div class="thumb-bar" id="thumb-bar"></div>
+    <div class="ui-buttons">
+        <div class="left-buttons">
+            <button id="about-button">aj300542</button>
+            <button id="pictureoff">苏东坡画像</button>
+        </div>
+        <div class="right-buttons">
+            <button id="wufo">题苏轼寒食帖跋</button>
+            <button id="home">返回主页</button>
+        </div>
+    </div>
+    <div class="portrait-container">
+        <div style="display: flex; flex-direction: column; align-items: center;">
+            <img id="portrait" src="portrait/0苏东坡.jpeg" alt="苏东坡画像" />
+            <div id="jpgname">0苏东坡</div>
+        </div>
+    </div>
+    <script>
+        const charsPath = "chars/";
+        const imgPath = "chars/";
+        const boxImgPath = "chars/";
+        const txtPath = "chars/txt.json";
+        const wufoPath = "chars/hanshi.json";
+        const originalWidth = 9138;
+        const originalHeight = 3163;
+    </script>
+    <script>
+        const portraitImages = [
+            "portrait/0苏东坡.jpeg",
+            "portrait/1北宋李公麟创作的《扶杖醉坐图》.jpeg",
+            "portrait/2元代趙孟頫《蘇東坡小像》.jpeg",
+            "portrait/3明代钱谷《东坡笠屐图》.jpeg",
+            "portrait/4清代李鱓《东坡笠屐图》.jpeg",
+            "portrait/5近代张大千《东坡居士笠屐图》.jpeg"
+        ];
+
+        const portrait = document.getElementById("portrait");
+        const jpgname = document.getElementById("jpgname");
+        let currentIndex = 0;
+
+        function extractName(path) {
+            const filename = path.split("/").pop(); // 取出文件名部分
+            return filename.replace(/\.[^/.]+$/, ""); // 去掉扩展名
+        }
+
+        setInterval(() => {
+            portrait.style.opacity = 0;
+            jpgname.style.opacity = 0;
+
+            setTimeout(() => {
+                currentIndex = (currentIndex + 1) % portraitImages.length;
+                const newSrc = portraitImages[currentIndex];
+                portrait.src = newSrc;
+                jpgname.textContent = extractName(newSrc);
+
+                portrait.style.opacity = 1;
+                jpgname.style.opacity = 1;
+            }, 1500);
+        }, 5000);
+
+
+        // 初始化显示第一个文件名
+        jpgname.textContent = extractName(portraitImages[0]);
+    </script>
+    <script>
+        const portraitContainer = document.querySelector(".portrait-container");
+        const pictureToggleButton = document.getElementById("pictureoff");
+
+        let portraitVisible = true; // 默认显示
+
+        pictureToggleButton.addEventListener("click", () => {
+            portraitVisible = !portraitVisible;
+
+            if (portraitVisible) {
+                portraitContainer.style.display = "flex";
+                pictureToggleButton.textContent = "苏东坡画像";
+            } else {
+                portraitContainer.style.display = "none";
+                pictureToggleButton.textContent = "开启画像";
+            }
+        });
+
+    </script>
+
+
+    <script>
+        // 打开 aj300542 的 GitHub 页面（新标签页）
+        document.getElementById("about-button").addEventListener("click", () => {
+            window.open("https://aj300542.github.io/", "_blank");
+        });
+
+        // 跳转到 index2.html（题苏轼寒食帖跋）
+        document.getElementById("wufo").addEventListener("click", () => {
+            window.location.href = "index2.html";
+        });
+
+        // 跳转到 index.html（返回主页）
+        document.getElementById("home").addEventListener("click", () => {
+            window.location.href = "index.html";
+        });
+    </script>
+    <script src="js/txt.js"></script>
+    <script src="js/chars.js"></script>
+    <script src="js/control.js"></script>
+</body>
+
+</html>

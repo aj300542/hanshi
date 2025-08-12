@@ -5,6 +5,7 @@
             width: 30vh;
             height: auto;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             margin: 0 auto;
@@ -48,4 +49,5 @@
 
         .cover-small:hover .hover-text {
             opacity: 1;
+            text-align: center;
         }

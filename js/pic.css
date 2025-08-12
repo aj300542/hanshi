@@ -1,0 +1,51 @@
+        .cover-small {
+            position: absolute;
+            top: 2vh;
+            left: 5vh;
+            width: 30vh;
+            height: auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto;
+            border-radius: 3vh;
+            overflow: hidden;
+        }
+
+        .cover-smallRu {
+            position: absolute;
+            top: 2vh;
+            right: 5vh;
+            width: 30vh;
+            height: auto;
+            display: flex;
+            flex-direction: column;
+            /* ✅ 垂直排列 */
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto;
+            border-radius: 3vh;
+            overflow: hidden;
+        }
+
+
+        .hover-text {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 100%;
+            font-size: 4vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.37);
+            color: #fff;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        .cover-small:hover .hover-text {
+            opacity: 1;
+        }

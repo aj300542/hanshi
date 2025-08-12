@@ -40,11 +40,22 @@
             width: auto;
         }
 
+        .cover-small:hover .hover-text {
+            font-size: 2.5vh;
+            text-align: left;
+            opacity: 1;
+        }
+
         .cover-smallRu {
             right: 2vh;
             top: 40%;
             width: auto;
             transform: translateY(-50%);
+        }
+
+        .cover-smallRu:hover .hover-text {
+            opacity: 1;
+            text-align: center;
         }
     </style>
 </head>
@@ -72,16 +83,28 @@
         </div>
     </div>
     <div class="cover-small">
+        <img src="chars2/char_048.jpg" style="width: 16vh;" />
+        <img src="chars2/char_049.jpg" style="width: 16vh;" />
+        <img src="chars2/char_051.jpg" style="width: 16vh;" />
+        <img src="chars2/char_052.jpg" style="width: 16vh;" />
+        </a>
+        <div class="hover-text">
+            东坡这首诗写得像李白，<br>
+            但恐怕李白也未必能达到这样的境界。<br>
+            这幅字的笔法融合了颜真卿的刚劲,<br>
+            杨凝式的洒脱，<br>还有李建中的清秀。<br>
+            就算让东坡再写一遍，<br>
+            也不一定能重现这份神采。<br>
+            要是东坡看到这幅字，<br>
+            肯定会笑我在没有佛的地方自称尊者。
+        </div>
+
+
+    </div>
+    <div class="cover-smallRu">
         <img src="portrait/3明代钱谷《东坡笠屐图》.jpeg" style="width: 20vh;" alt="点击下载" />
         </a>
         <div class="hover-text">明 钱谷<br>东坡笠屐图》</div>
-    </div>
-    <div class="cover-smallRu">
-        <img src="chars2/char_048.jpg" style="width: 14vh;" />
-        <img src="chars2/char_049.jpg" style="width: 14vh;" />
-        <img src="chars2/char_051.jpg" style="width: 14vh;" />
-        <img src="chars2/char_052.jpg" style="width: 14vh;" />
-        </a>
     </div>
     <script>
         const charsPath = "chars2/";

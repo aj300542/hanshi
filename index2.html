@@ -5,6 +5,7 @@
     <meta charset="UTF-8" />
     <title>寒食帖字图展示</title>
     <link rel="stylesheet" href="js/styles.css">
+    <link rel="stylesheet" href="js/pic.css">
     <style>
         .background {
             width: 100%;
@@ -28,21 +29,22 @@
 
 
         #poem-line {
-            position: absolute;
-            left: 85%;
-            top: 50%;
-            transform: translate(-50%, -50%);
-            font-family: "Noto Serif SC", serif;
-            text-align: center;
             font-size: 6vh;
-            height: 11vh;
-            padding: 1vh 2vh;
-            border-radius: 1vh;
-            white-space: nowrap;
-            z-index: 999;
-            pointer-events: none;
-            display: none;
-            /* 默认隐藏 */
+            height: 8vh;
+        }
+
+        .cover-small {
+            left: 2vh;
+            top: 40%;
+            transform: translateY(-50%);
+            width: auto;
+        }
+
+        .cover-smallRu {
+            right: 2vh;
+            top: 40%;
+            width: auto;
+            transform: translateY(-50%);
         }
     </style>
 </head>
@@ -65,9 +67,21 @@
             <button id="about-button">aj300542</button>
         </div>
         <div class="right-buttons">
-            <button id="home">苏轼寒食帖</button>
+            <button id="home">返回主页</button>
             <button id="aj300">捐赠</button>
         </div>
+    </div>
+    <div class="cover-small">
+        <img src="portrait/3明代钱谷《东坡笠屐图》.jpeg" style="width: 20vh;" alt="点击下载" />
+        </a>
+        <div class="hover-text">明 钱谷<br>东坡笠屐图》</div>
+    </div>
+    <div class="cover-smallRu">
+        <img src="chars2/char_048.jpg" style="width: 14vh;" />
+        <img src="chars2/char_049.jpg" style="width: 14vh;" />
+        <img src="chars2/char_051.jpg" style="width: 14vh;" />
+        <img src="chars2/char_052.jpg" style="width: 14vh;" />
+        </a>
     </div>
     <script>
         const charsPath = "chars2/";
@@ -79,25 +93,7 @@
         const originalHeight = 1920;
 
     </script>
-    <script>
-
-    </script>
-
-    <script>
-        // 打开 aj300542 的 GitHub 页面（新标签页）
-        document.getElementById("about-button").addEventListener("click", () => {
-            window.open("https://aj300542.github.io/", "_blank");
-        });
-
-        // 跳转到 index2.html（题苏轼寒食帖跋）
-        document.getElementById("home").addEventListener("click", () => {
-            window.location.href = "index.html";
-        });
-
-        document.getElementById("aj300").addEventListener("click", () => {
-            window.open("https://aj300542.github.io/", "_blank");
-        });
-    </script>
+    <script src="js/button2.js"></script>
     <script src="js/txt.js"></script>
     <script src="js/chars.js"></script>
     <script src="js/control.js"></script>

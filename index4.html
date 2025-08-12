@@ -18,7 +18,7 @@
 
         .image-wrapper {
             position: relative;
-            width: 50%;
+            width: 55%;
         }
 
         .image-wrapper img {
@@ -29,8 +29,21 @@
 
 
         #poem-line {
-            font-size: 4vh;
-            height: 6vh;
+            position: absolute;
+            left: 85%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            font-family: "Noto Serif SC", serif;
+            text-align: center;
+            font-size: 6vh;
+            height: 11vh;
+            padding: 1vh 2vh;
+            border-radius: 1vh;
+            white-space: nowrap;
+            z-index: 999;
+            pointer-events: none;
+            display: none;
+            /* 默认隐藏 */
         }
     </style>
 </head>
@@ -38,7 +51,7 @@
 <body>
     <div class="background">
         <div class="image-wrapper">
-            <img src="hang2.jpg" alt="背景图" />
+            <img src="far2.jpg" alt="背景图" />
         </div>
     </div>
     <div id="box-preview"></div>
@@ -57,11 +70,10 @@
             <button id="aj300">捐赠</button>
         </div>
     </div>
-    </div>
     <div class="cover-small">
-        <img src="portrait/wxz.jpg" style="width: 30vh;" alt="点击下载" />
+        <img src="portrait/wwes.jpg" style="width: 30vh;" alt="点击下载" />
         </a>
-        <div class="hover-text">歷代聖賢半身像<br>王羲之</div>
+        <div class="hover-text">宋 马远<br>王羲之玩鹅图</div>
     </div>
     <div class="cover-smallRu">
         <img src="portrait/e2.jpg" style="width: 30vh;" />
@@ -69,13 +81,13 @@
         </a>
     </div>
     <script>
-        const charsPath = "chars3/";
-        const imgPath = "chars3/";
-        const boxImgPath = "chars3/";
-        const txtPath = "chars3/txt.json";
-        const wufoPath = "chars3/hang.json";
-        const originalWidth = 3837;
-        const originalHeight = 3376;
+        const charsPath = "chars4/";
+        const imgPath = "chars4/";
+        const boxImgPath = "chars4/";
+        const txtPath = "chars4/txt.json";
+        const wufoPath = "chars4/far.json";
+        const originalWidth = 2235;
+        const originalHeight = 1719;
 
     </script>
     <script src="js/button2.js"></script>

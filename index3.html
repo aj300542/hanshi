@@ -8,29 +8,69 @@
     <link rel="stylesheet" href="js/pic.css">
     <style>
         .background {
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            position: relative;
-            padding-top: 0;
-            margin-top: 0;
+            width: 100vw;
+            overflow: hidden;
+            display: block;
+            /* 改为 block，避免 flex 撑开子元素 */
+            justify-content: flex-start;
+            align-items: flex-start;
+            padding: 0;
+            margin: 0;
+
         }
+
 
         .image-wrapper {
             position: relative;
-            width: 50%;
+
+            /* ✅ 让它根据内容宽度自适应 */
+            max-width: none;
+            overflow-x: auto;
+            overflow-y: hidden;
+            scroll-behavior: smooth;
+            display: inline-flex;
+            flex-direction: row;
         }
 
+
         .image-wrapper img {
-            width: 100%;
-            height: auto;
-            display: block;
+            height: 68vh;
+            max-height: 80vh;
+            width: 3503;
+            /* 或者 width: 100%; max-width: none; */
+            max-width: none !important;
+            display: inline-block;
+        }
+
+        .image-wrapper.dragging,
+        #thumb-bar.dragging {
+            cursor: grabbing;
+            user-select: none;
+        }
+
+        .image-wrapper-container {
+            width: 100vw;
+            display: flex;
+            justify-content: center;
+            /* ✅ 水平居中 */
+            overflow-x: hidden;
+            /* 防止外部滚动条 */
         }
 
 
         #poem-line {
             font-size: 4vh;
             height: 6vh;
+        }
+
+        .cover-small {
+            background: rgb(168, 137, 97);
+            width: auto;
+        }
+
+        .cover-smallRu {
+            background: rgb(168, 137, 97);
+            width: auto;
         }
 
         .cover-smallRu:hover .hover-text {
@@ -41,13 +81,15 @@
 </head>
 
 <body>
-    <div class="background">
-        <div class="image-wrapper">
+    <div class="image-wrapper-container">
+        <div class="image-wrapper" id="image-wrapper">
             <img src="hang2.jpg" alt="背景图" />
         </div>
     </div>
     <div id="box-preview"></div>
-
+    <div class="scroll-container">
+        <div class="scroll-line" id="scroll-line"></div>
+    </div>
 
     <div class="preview" id="preview"></div>
     <div class="poem-line" id="poem-line"></div>
@@ -64,13 +106,14 @@
     </div>
     </div>
     <div class="cover-small">
-        <img src="portrait/wxz.jpg" style="width: 30vh;" alt="点击下载" />
+        <img src="portrait/wxz.jpg" style="width: 12vw;" />
+        <img src="chars3/char_015.jpg" style="width: 8vw;" />
         </a>
         <div class="hover-text">歷代聖賢半身像<br>王羲之</div>
     </div>
     <div class="cover-smallRu">
-        <img src="portrait/e2.jpg" style="width: 30vh;" />
-        <img src="portrait/e1.jpg" style="width: 30vh;" />
+        <img src="portrait/e2.jpg" style="width: 14vw;" />
+        <img src="portrait/e1.jpg" style="width: 14vw;" />
         </a>
         <div class="hover-text">
             你到达穰地很久了<br>
@@ -91,10 +134,11 @@
         const originalHeight = 3376;
 
     </script>
+    <script src="js/letter.js"></script>
     <script src="js/button2.js"></script>
     <script src="js/txt.js"></script>
     <script src="js/chars.js"></script>
-    <script src="js/control.js"></script>
+    <script src="js/controls.js"></script>
 </body>
 
 </html>

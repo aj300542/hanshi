@@ -59,8 +59,21 @@
 
 
         #poem-line {
-            font-size: 4vh;
-            height: 6vh;
+            position: absolute;
+            left: 85%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            font-family: "Noto Serif SC", serif;
+            text-align: center;
+            font-size: 6vh;
+            height: 11vh;
+            padding: 1vh 2vh;
+            border-radius: 1vh;
+            white-space: nowrap;
+            z-index: 999;
+            pointer-events: none;
+            display: none;
+            /* 默认隐藏 */
         }
 
         .cover-small {
@@ -74,20 +87,20 @@
         }
 
         .cover-smallRu:hover .hover-text {
+            font-size: 2.5vh;
             opacity: 1;
-            text-align: left;
         }
     </style>
 </head>
 
 <body>
-
     <div class="image-wrapper-container">
         <div class="image-wrapper" id="image-wrapper">
-            <img src="wufo2.jpg" alt="背景图" />
+            <img src="xue2.jpg" alt="背景图" />
         </div>
     </div>
     <div id="box-preview"></div>
+
     <div class="scroll-container">
         <div class="scroll-line" id="scroll-line"></div>
     </div>
@@ -105,48 +118,40 @@
         </div>
     </div>
     <div class="cover-small">
-        <img src="chars2/char_048.jpg" style="width: 8vw;" />
-        <img src="chars2/char_049.jpg" style="width: 8vw;" />
-        <img src="chars2/char_051.jpg" style="width: 8vw;" />
-        <img src="chars2/char_052.jpg" style="width: 8vw;" />
+        <img src="portrait/wwes.jpg" style="width: 12vw;" alt="点击下载" />
         </a>
-        <div class="hover-text">
-            东坡这首诗写得像李白，<br>
-            但恐怕李白也未必能达到这样的境界。<br>
-            这幅字的笔法融合了颜真卿的刚劲,<br>
-            杨凝式的洒脱，<br>还有李建中的清秀。<br>
-            就算让东坡再写一遍，<br>
-            也不一定能重现这份神采。<br>
-            要是东坡看到这幅字，<br>
-            肯定会笑我在没有佛的地方自称尊者。
-        </div>
-
-
+        <div class="hover-text">宋 马远<br>王羲之玩鹅图</div>
     </div>
     <div class="cover-smallRu">
-        <img src="chars2/char_003.jpg" style="width: 8vw;" />
-        <img src="portrait/3明代钱谷《东坡笠屐图》.jpeg" style="width: 8vw;" alt="点击下载" />
+        <img src="portrait/e2.jpg" style="width: 12vw;" />
+        <img src="portrait/e1.jpg" style="width: 12vw;" />
         </a>
-
-        <div class="hover-text">明 钱谷<br>东坡笠屐图》</div>
-        <img src="chars2/char_046.jpg" style="width: 8vw;" />
+        <div class="hover-text">
+            王羲之向你行礼<br>
+            刚下过一场快雪，天气转晴<br>
+            想必你安好，一切顺利<br>
+            之前的事情未能完成<br>
+            心中有所牵挂<br>
+            但力不从心<br>
+            王羲之再次行礼<br>
+            山阴张侯
+        </div>
     </div>
     <script>
-        const charsPath = "chars2/";
-        const imgPath = "chars2/";
-        const boxImgPath = "chars2/";
-        const txtPath = "chars2/txt.json";
-        const wufoPath = "chars2/wufo.json";
-        const originalWidth = 3503;
-        const originalHeight = 1920;
+        const charsPath = "chars6/";
+        const imgPath = "chars6/";
+        const boxImgPath = "chars6/";
+        const txtPath = "chars6/txt.json";
+        const wufoPath = "chars6/xue.json";
+        const originalWidth = 3739;
+        const originalHeight = 2669;
 
     </script>
-
     <script src="js/letter.js"></script>
     <script src="js/button2.js"></script>
     <script src="js/txt.js"></script>
     <script src="js/chars.js"></script>
-    <script src="js/controls.js"></script>
+    <script src="js/control.js"></script>
 </body>
 
 </html>

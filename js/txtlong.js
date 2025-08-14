@@ -1,7 +1,4 @@
 let txtDataGlobal = [];
-let previewTimer = null;
-let currentPreviewFilename = null;
-
 Promise.all([
     fetch(txtPath).then(res => res.json()),
     fetch(wufoPath).then(res => res.json())
@@ -41,6 +38,7 @@ Promise.all([
             const scaleX = renderedWidth / originalWidth;
             const scaleY = renderedHeight / originalHeight;
 
+
             boxes.forEach(box => {
                 const boxDiv = document.createElement("div");
                 boxDiv.className = "overlay-box";
@@ -54,7 +52,6 @@ Promise.all([
                 boxDiv.style.zIndex = "10";
                 boxDiv.textContent = box.index;
 
-
                 boxDiv.addEventListener("mouseenter", () => {
                     const entry = txtDataGlobal[box.index - 1]; // 修复偏移
                     const filename = entry?.filename;
@@ -66,6 +63,7 @@ Promise.all([
                     }
                 });
 
+
                 boxDiv.addEventListener("mousemove", (e) => {
                     const offset = 40;
                     const previewWidth = preview2.offsetWidth;
@@ -73,24 +71,16 @@ Promise.all([
                     const pageWidth = window.innerWidth;
                     const pageHeight = window.innerHeight;
 
-                    // 水平方向
                     let left = e.clientX + offset;
                     if (left + previewWidth > pageWidth) {
                         left = e.clientX - previewWidth - offset;
                     }
-                    left = Math.max(0, Math.min(left, pageWidth - previewWidth)); // 限制在窗口内
 
-                    // 垂直方向
-                    let top = e.clientY + offset;
-                    if (top + previewHeight > pageHeight) {
-                        top = e.clientY - previewHeight - offset;
-                    }
-                    top = Math.max(0, Math.min(top, pageHeight - previewHeight)); // 限制在窗口内
+                    let top = (pageHeight - previewHeight) / 2;
 
                     preview2.style.left = `${left}px`;
                     preview2.style.top = `${top}px`;
                 });
-
 
                 boxDiv.addEventListener("mouseleave", () => {
                     preview2.style.display = "none";

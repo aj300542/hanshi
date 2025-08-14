@@ -6,8 +6,6 @@
             overflow: hidden;
         }
 
-
-
         .background img {
             position: absolute;
             width: 100%;
@@ -25,8 +23,8 @@
             top: 42%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 80vh;
-            height: 80vh;
+            width: 45vw;
+            height: 45vw;
             background-size: contain;
             background-repeat: no-repeat;
             background-position: center;
@@ -184,8 +182,8 @@
 
         #box-preview {
             position: fixed;
-            width: 85vh;
-            height: 85vh;
+            width: 45vw;
+            height: 45vw;
             pointer-events: none;
             z-index: 999;
             display: none;
@@ -212,7 +210,27 @@
             white-space: nowrap;
         }
 
+        .scroll-container {
+            position: fixed;
+            bottom: 23vh;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50vw;
+            height: 5vh;
+            overflow: hidden;
+            background-color: #fdf6e3;
+            font-size: 2.5vh;
+            font-family: "Noto Serif SC", serif;
+            color: #000000;
+            white-space: nowrap;
+        }
 
+        .scroll-line {
+            position: absolute;
+            top: 0;
+            white-space: nowrap;
+            will-change: transform;
+        }
 
         .ui-buttons {
             position: fixed;

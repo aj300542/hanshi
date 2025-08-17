@@ -58,33 +58,35 @@
         }
 
         .cover-small {
-            background: rgb(168, 137, 97);
+            background: rgba(168, 137, 97, 0.479);
             width: auto;
+            left: 1vh;
         }
 
         .cover-smallRu {
-            background: rgb(168, 137, 97);
+            background: rgba(168, 137, 97, 0.603);
             width: auto;
+            right: 1vh;
         }
 
         .cover-smallRu:hover .hover-text {
-            font-size: 2.5vh;
             opacity: 1;
+            text-align: left;
         }
     </style>
 </head>
 
 <body>
+
     <div class="image-wrapper-container">
         <div class="image-wrapper" id="image-wrapper">
-            <img src="far2.jpg" alt="背景图" />
+            <img src="mifu2.jpg" alt="背景图" />
         </div>
     </div>
     <div id="box-preview"></div>
     <div class="scroll-container">
         <div class="scroll-line" id="scroll-line"></div>
     </div>
-
     <div class="preview" id="preview"></div>
     <div class="poem-line" id="poem-line"></div>
     <div id="poemT-line"></div>
@@ -94,50 +96,57 @@
             <button id="about-button">aj300542</button>
         </div>
         <div class="right-buttons">
-            <button id="home">返回主页</button>
+            <button id="indexA_01">返回蜀素贴</button>
             <button id="aj300">捐赠</button>
         </div>
     </div>
     <div class="cover-small">
-        <img src="chars4/char_035.jpg" style="width: 8vw;" />
-        <img src="chars4/char_041.jpg" style="width: 5vw;" />
-        <img src="chars4/char_042.jpg" style="width: 10vw;" />
-        </a>
-        <div class="hover-text">救命<br>平安</div>
-    </div>
-    <div class="cover-smallRu">
-        <img src="portrait/e2.jpg" style="width: 15vw;" />
-        <img src="portrait/e1.jpg" style="width: 15vw;" />
+        <img src="charsa01/char_069.jpg" style="width: 3vw;" />
+        <img src="charsa01/char_070.jpg" style="width: 3vw;" />
+        <img src="charsa01/char_071.jpg" style="width: 2.5vw;" />
+        <img src="charsa01/char_072.jpg" style="width: 3vw;" />
         </a>
         <div class="hover-text">
-            读到你另来的书信<br>
-            你关心我家中大小事务，深感慰藉<br>
-            大家多分散在各地<br>
-            常念你的挂念之情<br>
-            陶武昌（陶侃）诸子亦多远在各地作官<br>
-            是否仍常有书信往来<br>
-            老妻近来病重，状况堪忧<br>
-            几近求命之急，令人揪心<br>
-            为其病情日夜忧虑，难以释怀<br>
-            其他人都大致平安<br>
-            知你情意殷切，深铭于心
+            东坡这首诗写得像李白，<br>
+            但恐怕李白也未必能达到这样的境界。<br>
+            这幅字的笔法融合了颜真卿的刚劲,<br>
+            杨凝式的洒脱，<br>还有李建中的清秀。<br>
+            就算让东坡再写一遍，<br>
+            也不一定能重现这份神采。<br>
+            要是东坡看到这幅字，<br>
+            肯定会笑我在没有佛的地方自称尊者。
         </div>
+
+
+    </div>
+    <div class="cover-smallRu">
+        <img src="charsa01/char_104.jpg" style="width: 3vw;" />
+        <img src="portrait/3明代钱谷《东坡笠屐图》.jpeg" style="width: 3vw;" alt="点击下载" />
+        </a>
+
+        <div class="hover-text">明 钱谷<br>东坡笠屐图》</div>
+        <img src="charsa01/char_104.jpg" style="width: 3vw;" />
     </div>
     <script>
-        const charsPath = "chars4/";
-        const imgPath = "chars4/";
-        const boxImgPath = "chars4/";
-        const txtPath = "chars4/txt.json";
-        const wufoPath = "chars4/far.json";
-        const originalWidth = 2235;
-        const originalHeight = 1719;
+        const charsPath = "charsa01/";
+        const imgPath = "charsa01/";
+        const boxImgPath = "charsa01/";
+        const txtPath = "charsa01/txt.json";
+        const wufoPath = "charsa01/mifu2.json";
+        const originalWidth = 3455;
+        const originalHeight = 1994;
 
+    </script>
+    <script>
+        document.getElementById("indexA_01").addEventListener("click", () => {
+            window.location.href = "indexA_01.html";
+        });
     </script>
     <script src="js/letter.js"></script>
     <script src="js/button2.js"></script>
     <script src="js/txt.js"></script>
     <script src="js/chars.js"></script>
-    <script src="js/control.js"></script>
+    <script src="js/controls.js"></script>
 </body>
 
 </html>

@@ -12,7 +12,6 @@ Promise.all([
         const poemLines = poemData.map(p => p.line);
         const poemNotes = poemTData.map(p => p.note);
 
-        // Flatten txt.json
         const flatChars = [];
         txtData.forEach((entry, i) => {
             [...entry.char].forEach((ch, j) => {
@@ -25,7 +24,6 @@ Promise.all([
             });
         });
 
-        // Flatten poem.json
         const flatPoemChars = [];
         poemLines.forEach((line, lineIndex) => {
             [...line].forEach((ch, charIndex) => {
@@ -72,20 +70,17 @@ Promise.all([
 
         function highlightSingleChar(line, index) {
             return [...line].map((ch, i) =>
-                i === index
-                    ? `<span class="highlight">${ch}</span>`
-                    : ch
+                i === index ? `<span class="highlight">${ch}</span>` : ch
             ).join("");
         }
 
         txtData.forEach((entry, i) => {
-            const filename = entry.filename;
-            const char = entry.char; // ✅ 修复：定义 char
+            const { filename, char } = entry;
+            if (!filename || !char) return;
 
             const wrapper = document.createElement("div");
             wrapper.className = "thumb-wrapper";
 
-            // 顶部字符标签
             const charLabel = document.createElement("div");
             charLabel.className = "char-label";
             charLabel.textContent = char;
@@ -101,14 +96,20 @@ Promise.all([
 
             let previewTimer = null;
 
-            img.addEventListener("mouseenter", () => {
+            img.addEventListener("mouseenter", (e) => {
                 clearTimeout(previewTimer);
-
                 previewTimer = setTimeout(() => {
-                    preview.style.backgroundImage = `url(${imgPath}${filename})`;
-                    preview.style.display = "block";
-                    label.style.opacity = "1";
+                    const rect = e.target.getBoundingClientRect();
+                    const x = rect.left + rect.width / 2;
+                    const y = rect.top + rect.height / 2;
 
+                    // ✅ 请求 txt.js 显示 box-preview
+                    window.dispatchEvent(new CustomEvent("requestBoxPreview", {
+                        detail: { filename }
+                    }));
+
+
+                    // ✅ 显示诗句和注释
                     const context = getContextTriple(filename);
                     const match = findMatch(context);
 
@@ -129,36 +130,28 @@ Promise.all([
                         poemTDisplay.textContent = "";
                         poemTDisplay.style.display = "none";
                     }
+
+                    // ✅ 显示 overlay-box
+                    window.dispatchEvent(new CustomEvent("showBoxByFilename", { detail: filename }));
                 }, 300);
             });
 
             img.addEventListener("mouseleave", () => {
+                clearTimeout(previewTimer);
                 preview.style.display = "none";
                 label.style.opacity = "0";
                 poemDisplay.innerHTML = "";
                 poemDisplay.style.display = "none";
-
                 poemTDisplay.textContent = "";
                 poemTDisplay.style.display = "none";
+
+                // ✅ 触发 txt.js 中隐藏 overlay-box 的事件
+                window.dispatchEvent(new CustomEvent("hideBoxByFilename", { detail: filename }));
             });
 
-            // 添加顺序：charLabel → img → label
-            wrapper.appendChild(charLabel);
-            wrapper.appendChild(img);
-            wrapper.appendChild(label);
-            thumbBar.appendChild(wrapper);
             img.addEventListener("dblclick", () => {
-                const entry = txtData[i]; // 当前字符条目
-                const filename = entry?.filename;
-                const char = entry?.char || "未命名";
-
-                if (!filename) {
-                    alert("❌ 无法下载：未找到对应图像");
-                    return;
-                }
-
                 const imgToLoad = new Image();
-                imgToLoad.crossOrigin = "anonymous"; // 如果图片是本地或允许跨域
+                imgToLoad.crossOrigin = "anonymous";
                 imgToLoad.src = `${imgPath}${filename}`;
 
                 imgToLoad.onload = () => {
@@ -169,20 +162,16 @@ Promise.all([
                     const ctx = canvas.getContext("2d");
                     ctx.drawImage(imgToLoad, 0, 0);
 
-                    // ✅ 添加水印文字（字符水印）
                     ctx.font = `${Math.floor(canvas.width / 20)}px 'KaiTi'`;
                     ctx.textAlign = "right";
                     ctx.textBaseline = "bottom";
 
-                    // 设置字符水印颜色（稍深）
                     ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
                     ctx.fillText(`${char}`, canvas.width - 20, canvas.height - 50);
 
-                    // 设置作者水印颜色（更淡）
                     ctx.fillStyle = "rgba(0, 0, 0, 0.25)";
                     ctx.fillText(`aj300542`, canvas.width - 20, canvas.height - 20);
 
-                    // ✅ 生成下载链接
                     const link = document.createElement("a");
                     link.href = canvas.toDataURL("image/jpeg");
                     link.download = `${char}.jpg`;
@@ -196,7 +185,36 @@ Promise.all([
                 };
             });
 
+            wrapper.appendChild(charLabel);
+            wrapper.appendChild(img);
+            wrapper.appendChild(label);
+            thumbBar.appendChild(wrapper);
         });
+        // ✅ 放在这里，紧跟在 thumbBar 渲染之后
+        window.addEventListener("hoverOnBox", (e) => {
+            const { filename } = e.detail;
+            const context = getContextTriple(filename);
+            const match = findMatch(context);
+
+            if (match) {
+                const line = poemLines[match.lineIndex];
+                const note = poemNotes[match.lineIndex];
+                const highlighted = highlightSingleChar(line, match.charIndex);
+
+                poemDisplay.innerHTML = highlighted;
+                poemDisplay.style.display = "block";
+
+                poemTDisplay.textContent = note;
+                poemTDisplay.style.display = "block";
+            } else {
+                poemDisplay.innerHTML = "未找到匹配诗句";
+                poemDisplay.style.display = "block";
+
+                poemTDisplay.textContent = "";
+                poemTDisplay.style.display = "none";
+            }
+        });
+
     })
     .catch(err => {
         console.error("加载失败:", err);

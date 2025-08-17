@@ -1,6 +1,6 @@
 let txtDataGlobal = [];
-let previewTimer = null;
-let currentPreviewFilename = null;
+let boxElements = [];
+
 
 Promise.all([
     fetch(txtPath).then(res => res.json()),
@@ -19,20 +19,77 @@ Promise.all([
 
             preview2.innerHTML = "";
 
-            // 字符标签
             const charLabel = document.createElement("div");
             charLabel.className = "char-label";
             charLabel.textContent = char;
             preview2.appendChild(charLabel);
 
-            // 图片
             const img = document.createElement("img");
             img.src = `${boxImgPath}${filename}`;
             img.alt = filename;
             preview2.appendChild(img);
 
             preview2.style.display = "block";
+
+            // ✅ 获取 box 中心点作为 x
+            const box = document.querySelector(`.overlay-box[data-filename="${filename}"]`);
+            if (box) {
+                const boxRect = box.getBoundingClientRect();
+                const centerX = boxRect.left + boxRect.width / 2;
+                const centerY = boxRect.top + boxRect.height / 2;
+
+                const offset = 40;
+                const previewWidth = preview2.offsetWidth;
+                const previewHeight = preview2.offsetHeight;
+                const pageWidth = window.innerWidth;
+
+                // ✅ 水平定位逻辑
+                let left = centerX + offset;
+                if (left + previewWidth > pageWidth) {
+                    left = centerX - previewWidth - offset;
+                }
+                left = Math.max(0, Math.min(left, pageWidth - previewWidth));
+
+                // ✅ 垂直定位固定为距离底部 18vh
+                const bottomOffset = 14; // 单位 vh
+                const top = window.innerHeight - previewHeight - (bottomOffset * window.innerHeight / 100);
+
+                preview2.style.left = `${left}px`;
+                preview2.style.top = `${top}px`;
+
+                // ✅ 获取 DOM 元素
+                const poemDisplay = document.getElementById("poem-line");
+                const poemTDisplay = document.getElementById("poemT-line");
+
+                // 获取 box-preview 的中心 X 坐标
+                const centerXa = left + previewWidth / 2;
+
+                // 固定 Y 坐标（单位：vh）
+                const poemBottomOffset = 7;   // 上方的诗句
+                const poemTBottomOffset = 3;  // 下方的注释
+
+                // 设置 poem-line（上方）
+                poemDisplay.style.left = `${centerXa}px`;
+                poemDisplay.style.bottom = `${poemBottomOffset}vh`;
+                poemDisplay.style.transform = "translate(-50%, 0)";
+                poemDisplay.style.position = "fixed";
+                poemDisplay.style.display = "block";
+
+                // 设置 poemT-line（下方）
+                poemTDisplay.style.left = `${centerXa}px`;
+                poemTDisplay.style.bottom = `${poemTBottomOffset}vh`;
+                poemTDisplay.style.transform = "translate(-50%, 0)";
+                poemTDisplay.style.position = "fixed";
+                poemTDisplay.style.display = "block";
+
+            }
         }
+
+        // ✅ 添加事件监听器，供 chars.js 调用
+        window.addEventListener("requestBoxPreview", (e) => {
+            const { filename } = e.detail;
+            updatePreview(filename);
+        });
 
         function renderBoxes() {
             const renderedWidth = bgImg.getBoundingClientRect().width;
@@ -46,51 +103,42 @@ Promise.all([
                 boxDiv.className = "overlay-box";
                 boxDiv.dataset.index = box.index;
 
+                const entry = txtDataGlobal[box.index - 1];
+                boxDiv.dataset.filename = entry?.filename || "";
+
+                const left = box.x1 * scaleX;
+                const top = box.y1 * scaleY;
+                const width = (box.x2 - box.x1) * scaleX;
+                const height = (box.y2 - box.y1) * scaleY;
+
                 boxDiv.style.position = "absolute";
-                boxDiv.style.left = `${box.x1 * scaleX}px`;
-                boxDiv.style.top = `${box.y1 * scaleY}px`;
-                boxDiv.style.width = `${(box.x2 - box.x1) * scaleX}px`;
-                boxDiv.style.height = `${(box.y2 - box.y1) * scaleY}px`;
+                boxDiv.style.left = `${left}px`;
+                boxDiv.style.top = `${top}px`;
+                boxDiv.style.width = `${width}px`;
+                boxDiv.style.height = `${height}px`;
                 boxDiv.style.zIndex = "10";
+                boxDiv.style.display = "none";
                 boxDiv.textContent = box.index;
 
-
                 boxDiv.addEventListener("mouseenter", () => {
-                    const entry = txtDataGlobal[box.index - 1]; // 修复偏移
-                    const filename = entry?.filename;
+                    const filename = boxDiv.dataset.filename;
                     if (filename) {
                         updatePreview(filename);
+
+                        // ✅ 触发显示诗句和注释
+                        window.dispatchEvent(new CustomEvent("hoverOnBox", {
+                            detail: { filename }
+                        }));
                     } else {
                         preview2.innerHTML = "<div class='error'>图像未找到</div>";
                         preview2.style.display = "block";
                     }
                 });
 
+
                 boxDiv.addEventListener("mousemove", (e) => {
-                    const offset = 40;
-                    const previewWidth = preview2.offsetWidth;
-                    const previewHeight = preview2.offsetHeight;
-                    const pageWidth = window.innerWidth;
-                    const pageHeight = window.innerHeight;
-
-                    // 水平方向
-                    let left = e.clientX + offset;
-                    if (left + previewWidth > pageWidth) {
-                        left = e.clientX - previewWidth - offset;
-                    }
-                    left = Math.max(0, Math.min(left, pageWidth - previewWidth)); // 限制在窗口内
-
-                    // 垂直方向
-                    let top = e.clientY + offset;
-                    if (top + previewHeight > pageHeight) {
-                        top = e.clientY - previewHeight - offset;
-                    }
-                    top = Math.max(0, Math.min(top, pageHeight - previewHeight)); // 限制在窗口内
-
-                    preview2.style.left = `${left}px`;
-                    preview2.style.top = `${top}px`;
+                    updatePreview(boxDiv.dataset.filename, e.clientX, e.clientY);
                 });
-
 
                 boxDiv.addEventListener("mouseleave", () => {
                     preview2.style.display = "none";
@@ -98,9 +146,8 @@ Promise.all([
                 });
 
                 boxDiv.addEventListener("dblclick", () => {
-                    const entry = txtDataGlobal[box.index - 1];
-                    const filename = entry?.filename;
-                    const char = entry?.char || "未命名";
+                    const filename = boxDiv.dataset.filename;
+                    const char = txtDataGlobal[box.index - 1]?.char || "未命名";
 
                     if (!filename) {
                         alert("❌ 无法下载：未找到对应图像");
@@ -108,7 +155,7 @@ Promise.all([
                     }
 
                     const img = new Image();
-                    img.crossOrigin = "anonymous"; // 如果图片是本地或允许跨域
+                    img.crossOrigin = "anonymous";
                     img.src = `${boxImgPath}${filename}`;
 
                     img.onload = () => {
@@ -119,20 +166,16 @@ Promise.all([
                         const ctx = canvas.getContext("2d");
                         ctx.drawImage(img, 0, 0);
 
-                        // ✅ 添加水印文字（字符水印）
                         ctx.font = `${Math.floor(canvas.width / 20)}px 'KaiTi'`;
                         ctx.textAlign = "right";
                         ctx.textBaseline = "bottom";
 
-                        // 设置字符水印颜色（稍深）
                         ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
                         ctx.fillText(`${char}`, canvas.width - 20, canvas.height - 50);
 
-                        // 设置作者水印颜色（更淡）
                         ctx.fillStyle = "rgba(0, 0, 0, 0.25)";
                         ctx.fillText(`aj300542`, canvas.width - 20, canvas.height - 20);
 
-                        // ✅ 生成下载链接
                         const link = document.createElement("a");
                         link.href = canvas.toDataURL("image/jpeg");
                         link.download = `${char}.jpg`;
@@ -146,9 +189,69 @@ Promise.all([
                     };
                 });
 
-
                 wrapper.appendChild(boxDiv);
+
+                boxElements.push({
+                    element: boxDiv,
+                    x: left,
+                    y: top,
+                    width,
+                    height
+                });
             });
+
+            // ✅ 鼠标在 image-wrapper 上移动时自动检测 box
+            wrapper.addEventListener("mousemove", (e) => {
+                const rect = bgImg.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+
+                let found = false;
+
+                boxElements.forEach(({ element, x: bx, y: by, width, height }) => {
+                    const inside = x >= bx && x <= bx + width && y >= by && y <= by + height;
+                    element.style.display = inside ? "block" : "none";
+                    if (inside) {
+                        const filename = element.dataset.filename;
+                        updatePreview(filename, e.clientX, e.clientY);
+                        found = true;
+                    }
+                });
+
+                if (!found) {
+                    preview2.style.display = "none";
+                    preview2.innerHTML = "";
+                }
+            });
+
+
+            // ✅ 响应 showBoxByFilename 事件
+            window.addEventListener("showBoxByFilename", (e) => {
+                const filename = e.detail;
+                document.querySelectorAll(`.overlay-box[data-filename="${filename}"]`)
+                    .forEach(box => {
+                        box.style.opacity = "0.6";
+                        box.style.display = "block";
+                    })
+
+                updatePreview(filename);
+
+            });
+
+            // ✅ 响应 hideBoxByFilename 事件
+            window.addEventListener("hideBoxByFilename", (e) => {
+                const filename = e.detail;
+                document.querySelectorAll(`.overlay-box[data-filename="${filename}"]`)
+                    .forEach(box => {
+                        box.style.opacity = "0.6";
+                        box.style.pointerEvents = "auto";
+
+                    });
+
+                preview2.style.display = "none";
+                preview2.innerHTML = "";
+            });
+
         }
 
         if (bgImg.complete) {

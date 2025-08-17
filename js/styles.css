@@ -33,76 +33,20 @@
             pointer-events: none;
         }
 
-        .poem-line {
-            position: fixed;
-            bottom: 22vh;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 5vh;
-            color: #333;
-            font-family: "Noto Serif SC", serif;
-            text-align: center;
-            white-space: pre-wrap;
-            z-index: 2;
-            max-width: 90vw;
-            background-color: rgba(255, 255, 255, 0.8);
-            padding: 1vh 2vh;
-            border-radius: 2vh;
-        }
-
-        #poem-line {
-            position: absolute;
-            left: 85%;
-            top: 50%;
-            transform: translate(-50%, -50%);
-            font-family: "Noto Serif SC", serif;
-            text-align: center;
-            font-size: 10vh;
-            height: 11vh;
-            padding: 1vh 2vh;
-            border-radius: 1vh;
-            white-space: nowrap;
-            z-index: 2;
-            pointer-events: none;
-            display: none;
-            /* 默认隐藏 */
-        }
-
-        #poemT-line {
-            position: absolute;
-            left: 85%;
-            top: 70%;
-            /* 稍微低于诗句位置，避免重叠 */
-            transform: translate(-50%, -50%);
-            font-family: "Noto Serif SC", serif;
-            text-align: center;
-            font-size: 3.5vh;
-            width: 40vh;
-            padding: 1vh 2vh;
-            border-radius: 1vh;
-            background-color: rgba(255, 255, 255, 0.8);
-            /* 半透明背景提升可读性 */
-            color: #333;
-            white-space: normal;
-            /* 允许换行显示完整注释 */
-            z-index: 2;
-            /* 略低于诗句，避免遮挡 */
-            pointer-events: none;
-            display: none;
-            /* 默认隐藏 */
-            box-shadow: 0 0 1vh rgba(0, 0, 0, 0.2);
-            /* 轻微阴影增强层次感 */
-        }
 
 
         .highlight {
             background-color: rgba(0, 0, 0, 0.1);
             font-weight: bold;
-            color: rgb(255, 153, 0);
+            color: rgb(255, 0, 0);
             text-decoration: underline;
             border-radius: 0.5vh;
             padding: 0.2vh 0.4vh;
             display: inline-block;
+        }
+
+        .overlay-box {
+            border-radius: 25%;
         }
 
         .thumb-bar {
@@ -209,6 +153,25 @@
             pointer-events: none;
             white-space: nowrap;
         }
+
+        #poem-line,
+        #poemT-line {
+            position: fixed;
+            font-family: "Noto Serif SC", serif;
+            text-align: center;
+            font-size: 2.5vh;
+            padding: 1vh 2vh;
+            border-radius: 1vh;
+            background-color: rgba(255, 255, 255, 0.8);
+            color: #333;
+            white-space: nowrap;
+            z-index: 999;
+            pointer-events: none;
+            display: none;
+            box-shadow: 0 0 1vh rgba(0, 0, 0, 0.2);
+        }
+
+
 
         .scroll-container {
             position: fixed;

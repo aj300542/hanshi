@@ -37,7 +37,7 @@
   {"filename": "char_035.jpg", "count": 1, "char": "泥"},
   {"filename": "char_036.jpg", "count": 1, "char": "污"},
   {"filename": "char_037.jpg", "count": 1, "char": "燕"},
-  {"filename": "char_038.jpg", "count": 1, "char": "脂"},
+  {"filename": "char_038.jpg", "count": 1, "char": "支"},
   {"filename": "char_039.jpg", "count": 1, "char": "雪"},
   {"filename": "char_040.jpg", "count": 1, "char": "闇"},
   {"filename": "char_041.jpg", "count": 1, "char": "中"},
@@ -129,3 +129,4 @@
   {"filename": "char_127.jpg", "count": 1, "char": "二"},
   {"filename": "char_128.jpg", "count": 1, "char": "首"}
 ]
+

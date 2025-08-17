@@ -97,6 +97,56 @@ Promise.all([
                     preview2.innerHTML = "";
                 });
 
+                boxDiv.addEventListener("dblclick", () => {
+                    const entry = txtDataGlobal[box.index - 1];
+                    const filename = entry?.filename;
+                    const char = entry?.char || "未命名";
+
+                    if (!filename) {
+                        alert("❌ 无法下载：未找到对应图像");
+                        return;
+                    }
+
+                    const img = new Image();
+                    img.crossOrigin = "anonymous"; // 如果图片是本地或允许跨域
+                    img.src = `${boxImgPath}${filename}`;
+
+                    img.onload = () => {
+                        const canvas = document.createElement("canvas");
+                        canvas.width = img.width;
+                        canvas.height = img.height;
+
+                        const ctx = canvas.getContext("2d");
+                        ctx.drawImage(img, 0, 0);
+
+                        // ✅ 添加水印文字（字符水印）
+                        ctx.font = `${Math.floor(canvas.width / 20)}px 'KaiTi'`;
+                        ctx.textAlign = "right";
+                        ctx.textBaseline = "bottom";
+
+                        // 设置字符水印颜色（稍深）
+                        ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
+                        ctx.fillText(`${char}`, canvas.width - 20, canvas.height - 50);
+
+                        // 设置作者水印颜色（更淡）
+                        ctx.fillStyle = "rgba(0, 0, 0, 0.25)";
+                        ctx.fillText(`aj300542`, canvas.width - 20, canvas.height - 20);
+
+                        // ✅ 生成下载链接
+                        const link = document.createElement("a");
+                        link.href = canvas.toDataURL("image/jpeg");
+                        link.download = `${char}.jpg`;
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                    };
+
+                    img.onerror = () => {
+                        alert("❌ 图片加载失败");
+                    };
+                });
+
+
                 wrapper.appendChild(boxDiv);
             });
         }

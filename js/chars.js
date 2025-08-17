@@ -147,6 +147,55 @@ Promise.all([
             wrapper.appendChild(img);
             wrapper.appendChild(label);
             thumbBar.appendChild(wrapper);
+            img.addEventListener("dblclick", () => {
+                const entry = txtData[i]; // 当前字符条目
+                const filename = entry?.filename;
+                const char = entry?.char || "未命名";
+
+                if (!filename) {
+                    alert("❌ 无法下载：未找到对应图像");
+                    return;
+                }
+
+                const imgToLoad = new Image();
+                imgToLoad.crossOrigin = "anonymous"; // 如果图片是本地或允许跨域
+                imgToLoad.src = `${imgPath}${filename}`;
+
+                imgToLoad.onload = () => {
+                    const canvas = document.createElement("canvas");
+                    canvas.width = imgToLoad.width;
+                    canvas.height = imgToLoad.height;
+
+                    const ctx = canvas.getContext("2d");
+                    ctx.drawImage(imgToLoad, 0, 0);
+
+                    // ✅ 添加水印文字（字符水印）
+                    ctx.font = `${Math.floor(canvas.width / 20)}px 'KaiTi'`;
+                    ctx.textAlign = "right";
+                    ctx.textBaseline = "bottom";
+
+                    // 设置字符水印颜色（稍深）
+                    ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
+                    ctx.fillText(`${char}`, canvas.width - 20, canvas.height - 50);
+
+                    // 设置作者水印颜色（更淡）
+                    ctx.fillStyle = "rgba(0, 0, 0, 0.25)";
+                    ctx.fillText(`aj300542`, canvas.width - 20, canvas.height - 20);
+
+                    // ✅ 生成下载链接
+                    const link = document.createElement("a");
+                    link.href = canvas.toDataURL("image/jpeg");
+                    link.download = `${char}.jpg`;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                };
+
+                imgToLoad.onerror = () => {
+                    alert("❌ 图片加载失败");
+                };
+            });
+
         });
     })
     .catch(err => {

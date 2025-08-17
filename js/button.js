@@ -24,6 +24,15 @@ document.getElementById("index7").addEventListener("click", () => {
 document.getElementById("index8").addEventListener("click", () => {
     window.location.href = "index8.html";
 });
+document.getElementById("index9").addEventListener("click", () => {
+    window.location.href = "index9.html";
+});
+document.getElementById("index10").addEventListener("click", () => {
+    window.location.href = "index10.html";
+});
+document.getElementById("indexA_01").addEventListener("click", () => {
+    window.location.href = "indexA_01.html";
+});
 document.getElementById("aj300").addEventListener("click", () => {
     window.open("https://aj300542.github.io/download.html", "_blank");
 });

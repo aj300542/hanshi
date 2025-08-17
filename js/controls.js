@@ -81,9 +81,9 @@ window.addEventListener("DOMContentLoaded", () => {
     const thumbBar = document.getElementById("thumb-bar");
 
     enableDragScroll(thumbBar, {
-        speedFactor: 0.85,
-        inertiaBoost: 1.5,
-        friction: 0.92
+        speedFactor: 0.45,
+        inertiaBoost: 1.2,
+        friction: 0.9
     });
         const imgwrap = document.getElementById("image-wrapper");
 

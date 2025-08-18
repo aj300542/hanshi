@@ -129,9 +129,24 @@ Promise.all([
                         window.dispatchEvent(new CustomEvent("hoverOnBox", {
                             detail: { filename }
                         }));
+                        // ✅ 滚动 thumb-bar
+                        window.dispatchEvent(new CustomEvent("scrollToThumb", {
+                            detail: { filename }
+                        }));
+
+                        // ✅ 滚动 image-wrapper 居中目标 box
+                        window.dispatchEvent(new CustomEvent("scrollToBox", {
+                            detail: { filename }
+                        }));
+
                     } else {
                         preview2.innerHTML = "<div class='error'>图像未找到</div>";
                         preview2.style.display = "block";
+                    }
+                    if (filename) {
+                        window.dispatchEvent(new CustomEvent("scrollToThumb", {
+                            detail: { filename }
+                        }));
                     }
                 });
 
@@ -250,6 +265,20 @@ Promise.all([
 
                 preview2.style.display = "none";
                 preview2.innerHTML = "";
+            });
+            window.addEventListener("scrollToBox", (e) => {
+                const { filename } = e.detail;
+                const targetBox = document.querySelector(`.overlay-box[data-filename="${filename}"]`);
+                if (targetBox) {
+                    const wrapperRect = wrapper.getBoundingClientRect();
+                    const boxRect = targetBox.getBoundingClientRect();
+                    const scrollLeft = wrapper.scrollLeft + (boxRect.left - wrapperRect.left) - (wrapper.clientWidth / 2) + (boxRect.width / 2);
+                    wrapper.scrollTo({ left: scrollLeft, behavior: "smooth" });
+
+                    // ✅ 可选：高亮目标 box
+                    targetBox.classList.add("highlight");
+                    setTimeout(() => targetBox.classList.remove("highlight"), 1000);
+                }
             });
 
         }

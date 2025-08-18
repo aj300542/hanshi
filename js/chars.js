@@ -108,8 +108,7 @@ Promise.all([
                         detail: { filename }
                     }));
 
-
-                    // ✅ 显示诗句和注释
+                    // ✅ 查找匹配诗句和注释
                     const context = getContextTriple(filename);
                     const match = findMatch(context);
 
@@ -123,6 +122,17 @@ Promise.all([
 
                         poemTDisplay.textContent = note;
                         poemTDisplay.style.display = "block";
+
+                        // ✅ 显示 overlay-box
+                        window.dispatchEvent(new CustomEvent("showBoxByFilename",
+                            { detail: filename }));
+                        // ✅ 滚动居中
+                        window.dispatchEvent(new CustomEvent("scrollToBox",
+                            { detail: filename }));
+                        // ✅ 添加这一行
+                        window.dispatchEvent(new CustomEvent("scrollToBox", {
+                            detail: { filename }
+                        }));
                     } else {
                         poemDisplay.innerHTML = "未找到匹配诗句";
                         poemDisplay.style.display = "block";
@@ -130,11 +140,9 @@ Promise.all([
                         poemTDisplay.textContent = "";
                         poemTDisplay.style.display = "none";
                     }
-
-                    // ✅ 显示 overlay-box
-                    window.dispatchEvent(new CustomEvent("showBoxByFilename", { detail: filename }));
                 }, 300);
             });
+
 
             img.addEventListener("mouseleave", () => {
                 clearTimeout(previewTimer);
@@ -214,6 +222,27 @@ Promise.all([
                 poemTDisplay.style.display = "none";
             }
         });
+        window.addEventListener("scrollToThumb", (e) => {
+            const { filename } = e.detail;
+            const target = [...thumbBar.querySelectorAll(".thumb-wrapper")]
+                .find(wrapper => {
+                    const label = wrapper.querySelector(".filename");
+                    return label?.textContent === filename;
+                });
+
+            if (target) {
+                const barRect = thumbBar.getBoundingClientRect();
+                const targetRect = target.getBoundingClientRect();
+                const scrollLeft = thumbBar.scrollLeft;
+                const offset = target.offsetLeft + target.offsetWidth / 2 - barRect.width / 2;
+
+                thumbBar.scrollTo({
+                    left: offset,
+                    behavior: "smooth"
+                });
+            }
+        });
+
 
     })
     .catch(err => {

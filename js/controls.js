@@ -1,4 +1,3 @@
-
 function enableDragScroll(element, options = {}) {
     const speedFactor = options.speedFactor ?? 0.65;
     const inertiaBoost = options.inertiaBoost ?? 1.6;
@@ -14,6 +13,7 @@ function enableDragScroll(element, options = {}) {
     // 鼠标事件
     element.addEventListener("mousedown", (e) => {
         isDown = true;
+        hasDragged = false;
         element.classList.add("dragging");
         startX = e.pageX - element.offsetLeft;
         scrollLeft = element.scrollLeft;
@@ -22,16 +22,12 @@ function enableDragScroll(element, options = {}) {
 
     window.addEventListener("mouseup", () => {
         if (!isDown) return;
-        isDown = false;
-        element.classList.remove("dragging");
-        applyInertia();
+        endDrag();
     });
 
     element.addEventListener("mouseleave", () => {
         if (!isDown) return;
-        isDown = false;
-        element.classList.remove("dragging");
-        applyInertia();
+        endDrag();
     });
 
     element.addEventListener("mousemove", (e) => {
@@ -49,10 +45,10 @@ function enableDragScroll(element, options = {}) {
         }
     });
 
-
     // 触控事件
     element.addEventListener("touchstart", (e) => {
         isDown = true;
+        hasDragged = false;
         element.classList.add("dragging");
         startX = e.touches[0].pageX - element.offsetLeft;
         scrollLeft = element.scrollLeft;
@@ -60,9 +56,7 @@ function enableDragScroll(element, options = {}) {
 
     element.addEventListener("touchend", () => {
         if (!isDown) return;
-        isDown = false;
-        element.classList.remove("dragging");
-        applyInertia();
+        endDrag();
     });
 
     element.addEventListener("touchmove", (e) => {
@@ -80,7 +74,6 @@ function enableDragScroll(element, options = {}) {
         }
     }, { passive: false });
 
-
     // 惯性滑动
     function applyInertia() {
         let inertia = Math.max(Math.min(lastWalk, 80), -80);
@@ -92,34 +85,36 @@ function enableDragScroll(element, options = {}) {
         };
         requestAnimationFrame(step);
     }
+
+    // 外部可调用的结束拖拽函数
+    function endDrag() {
+        isDown = false;
+        hasDragged = false;
+        element.classList.remove("dragging");
+        applyInertia();
+    }
+
+    // 返回控制器
+    return { endDrag };
 }
 
-// ✅ 初始化拖拽区域
+// ✅ 拖拽区域配置
+const dragConfigs = [
+    { id: "thumb-bar", speedFactor: 0.45, inertiaBoost: 1.2, friction: 0.9 },
+    { id: "image-wrapper", speedFactor: 0.85, inertiaBoost: 1.5, friction: 0.92 }
+];
+
+// ✅ 控制器存储，可用于外部调用
+const dragControllers = {};
+
 window.addEventListener("DOMContentLoaded", () => {
-    const thumbBar = document.getElementById("thumb-bar");
-
-    enableDragScroll(thumbBar, {
-        speedFactor: 0.45,
-        inertiaBoost: 1.2,
-        friction: 0.9
-    });
-    const imgwrap = document.getElementById("image-wrapper");
-
-    enableDragScroll(imgwrap, {
-        speedFactor: 0.85,
-        inertiaBoost: 1.5,
-        friction: 0.92
+    dragConfigs.forEach(cfg => {
+        const el = document.getElementById(cfg.id);
+        if (el) {
+            dragControllers[cfg.id] = enableDragScroll(el, cfg);
+        }
     });
 });
 
-function endDrag() {
-    if (!isDown) return;
-    isDown = false;
-    hasDragged = false;
-    element.classList.remove("dragging");
-    applyInertia();
-}
-
-window.addEventListener("mouseup", endDrag);
-element.addEventListener("mouseleave", endDrag);
-element.addEventListener("touchend", endDrag);
+// ✅ 示例：外部调用结束拖拽
+// dragControllers["thumb-bar"].endDrag();

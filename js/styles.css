@@ -221,3 +221,40 @@
         .ui-buttons button:hover {
             background-color: rgba(172, 172, 172, 0.479);
         }
+
+        .play-buttons {
+            position: fixed;
+            bottom: 24vh;
+            right: 5%;
+            display: flex;
+            height: 4vh;
+            width: 8vw;
+            justify-content: space-between;
+            padding: 0 2vw;
+            z-index: 3;
+            pointer-events: auto;
+        }
+
+        .play-buttons button {
+            background: transparent;
+            color: #291b00;
+            border: none;
+            padding: 1vh 2vh;
+            font-size: 1.75vh;
+            border-radius: 0.5vh;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .play-buttons button:hover {
+            background-color: rgba(172, 172, 172, 0.479);
+        }
+
+        #speed-buttons {
+            display: flex;
+        }
+
+        #speed-buttons button.active {
+            background-color: rgba(100, 100, 100, 0.3);
+            font-weight: bold;
+        }

@@ -84,6 +84,8 @@ Promise.all([
 
             }
         }
+        // ✅ 显式挂载到 window，确保 index2.html 能访问
+        window.updatePreview = updatePreview;
 
         // ✅ 添加事件监听器，供 chars.js 调用
         window.addEventListener("requestBoxPreview", (e) => {
@@ -266,21 +268,35 @@ Promise.all([
                 preview2.style.display = "none";
                 preview2.innerHTML = "";
             });
+            let lastScrollX = null; // 记录上一次 box 的中心 X 坐标
+
             window.addEventListener("scrollToBox", (e) => {
                 const { filename } = e.detail;
                 const targetBox = document.querySelector(`.overlay-box[data-filename="${filename}"]`);
-                if (targetBox) {
-                    const wrapperRect = wrapper.getBoundingClientRect();
-                    const boxRect = targetBox.getBoundingClientRect();
-                    const scrollLeft = wrapper.scrollLeft + (boxRect.left - wrapperRect.left) - (wrapper.clientWidth / 2) + (boxRect.width / 2);
-                    wrapper.scrollTo({ left: scrollLeft, behavior: "smooth" });
+                const wrapper = document.querySelector(".image-wrapper");
 
-                    // ✅ 可选：高亮目标 box
+                if (targetBox && wrapper) {
+                    const boxCenterX = targetBox.offsetLeft + targetBox.offsetWidth / 2;
+                    const wrapperCenterX = wrapper.clientWidth / 2;
+                    const scrollLeft = boxCenterX - wrapperCenterX;
+
+                    // ✅ 使用 wrapper 宽度动态计算阈值（例如 10%）
+                    const threshold = wrapper.clientWidth * 0.1; // 10% 宽度
+                    const deltaX = lastScrollX === null ? Infinity : Math.abs(boxCenterX - lastScrollX);
+
+                    if (deltaX > threshold) {
+                        wrapper.scrollTo({
+                            left: scrollLeft,
+                            behavior: "smooth"
+                        });
+                        lastScrollX = boxCenterX;
+                    }
+
+                    // ✅ 高亮目标 box
                     targetBox.classList.add("highlight");
                     setTimeout(() => targetBox.classList.remove("highlight"), 1000);
                 }
             });
-
         }
 
         if (bgImg.complete) {

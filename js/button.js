@@ -33,6 +33,9 @@ document.getElementById("index10").addEventListener("click", () => {
 document.getElementById("indexA_01").addEventListener("click", () => {
     window.location.href = "indexA_01.html";
 });
+document.getElementById("indexB").addEventListener("click", () => {
+    window.location.href = "indexB.html";
+});
 document.getElementById("aj300").addEventListener("click", () => {
     window.open("https://aj300542.github.io/download.html", "_blank");
 });

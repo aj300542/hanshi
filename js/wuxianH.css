@@ -1,0 +1,387 @@
+.labubu {
+    position: absolute;
+    width: 55vh;
+    height: 45vh;
+    background: radial-gradient(circle at 40% 30%,
+            #ffdfb0,
+            #ffdfb0,
+            #ffdfb0);
+
+
+    border: o.5vh solid #214D61;
+    border-radius: 50%;
+    box-shadow:
+        0 0 0 0.5vh #214D61,
+        /* 模拟二层轮廓 */
+        inset 0.5vh 2vh 0 rgba(0, 0, 0, 0.25),
+        inset -1.5vh -2.5vh 0 rgba(0, 0, 0, 0.25);
+    z-index: 1;
+}
+
+
+.labubub {
+    position: absolute;
+    width: 55vh;
+    height: 55vh;
+    top: -7vh;
+    background: radial-gradient(circle at 40% 30%,
+            #ffdfb0,
+            #ffdfb0,
+            #ffdfb0);
+
+
+    border: 0.25vh solid #214D61;
+    border-radius: 50%;
+    box-shadow:
+        0 0 0 0.5vh #214D61,
+        /* 模拟二层轮廓 */
+        inset 0.5vh 2vh 0 #214d61ce,
+        inset -1.5vh -2.5vh 0 rgba(0, 0, 0, 0.05);
+    z-index: -1;
+    overflow: hidden;
+}
+
+#labubuElem {
+    position: absolute;
+    transition: transform 1.5s ease-in-out;
+    /* 更柔和的移动 */
+    scale: 0.5;
+}
+
+.labubuHairB {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    left: 50%;
+    transform: translate(-50%);
+    width: 65vh;
+    height: 70vh;
+    top: -15vh;
+    background: #214D61;
+    border-radius: 45% 45% 50% 50%;
+    z-index: -4;
+    clip-path: ellipse(100% 60% at 60% 0%);
+}
+
+.labubuHair {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    left: 50%;
+    transform: translate(-50%);
+    width: 95vh;
+    height: 25vh;
+    top: -15vh;
+    background: #214D61;
+    border-radius: 50%;
+}
+
+.blush {
+    position: absolute;
+    width: 12vh;
+    height: 12vh;
+    top: 60%;
+    background: radial-gradient(circle, rgba(255, 128, 128, 0.4), transparent 70%);
+    border-radius: 50%;
+    z-index: 2;
+    opacity: 0.85;
+}
+
+.blush-left {
+    left: 6%;
+}
+
+.blush-right {
+    right: 6%;
+}
+
+.eyebrow {
+    position: absolute;
+    width: 17vh;
+    height: 1.5vh;
+    top: 15vh;
+    background: linear-gradient(to bottom,
+            #214D61 0%,
+            #214D61 50%,
+            #214D61 75%,
+            #000000 100%);
+    border-radius: 50%;
+    z-index: 3;
+}
+
+.eyebrow.left {
+    left: 6vh;
+    animation: brow-wiggle 10s ease-in-out infinite;
+}
+
+.eyebrow.right {
+    right: 6vh;
+    /* transform: rotate(5deg);*/
+    animation: brow-wiggle2 10s ease-in-out infinite;
+}
+
+.eyebrowB {
+    position: absolute;
+    width: 21vh;
+    height: 8vh;
+    top: 12vh;
+    background: linear-gradient(to bottom,
+            #ffdfb0 0%,
+            #ffdfb0 50%,
+            #ffdfb0 85%,
+            #b19976 100%);
+    border-radius: 25% 25% 25% 25%;
+    z-index: 1;
+}
+
+.eyebrowB.left {
+    left: 5vh;
+    animation: brow-wiggle 10s ease-in-out infinite;
+}
+
+.eyebrowB.right {
+    right: 5vh;
+    /* transform: rotate(5deg);*/
+    animation: brow-wiggle2 10s ease-in-out infinite;
+}
+
+@keyframes brow-wiggle {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    50% {
+        transform: rotate(25deg);
+    }
+
+    100% {
+        transform: rotate(0deg);
+    }
+}
+
+@keyframes brow-wiggle2 {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    50% {
+        transform: rotate(-25deg);
+    }
+
+    100% {
+        transform: rotate(0deg);
+    }
+}
+
+.nose {
+    position: absolute;
+    top: 30.5vh;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 2vh;
+    height: 4vh;
+    background: linear-gradient(to bottom,
+            #161616 0%,
+            /* 原 #ddc2ba 提亮＋偏粉 */
+            #141414 60%,
+            /* 原 #c99591 → 草莓牛奶调 */
+            #000000 100%
+            /* 原 #8b5e4e → 枣红/干玫瑰 */
+        );
+    opacity: 0.5;
+
+
+    box-shadow: inset 0 -0.3vh 0 rgba(255, 255, 255, 0.2);
+}
+
+.nose::before {
+    content: "";
+    position: absolute;
+    top: 0.5vh;
+    left: 0.8vh;
+    width: 1.2vh;
+    height: 0.8vh;
+    background: radial-gradient(circle, rgba(41, 41, 41, 0.8), rgba(255, 255, 255, 0));
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+
+.ear,
+.earw {
+    position: absolute;
+    border-radius: 25% 25% 50% 50%;
+    border: 0.75vh solid #214D61;
+}
+
+.ear {
+    width: 7vh;
+    height: 15vh;
+    top: 15vh;
+    background: radial-gradient(circle at 40% 30%,
+            #ffe6c1,
+            #ffe6c1,
+            #ffe6c1);
+    z-index: -2;
+}
+
+.left-ear {
+    left: -5vh;
+
+}
+
+.right-ear {
+    right: -5vh;
+}
+
+.earw {
+    width: 3vh;
+    height: 19vh;
+    background: #214D61;
+    left: 50%;
+    transform: translateX(-50%);
+
+}
+
+
+
+.left-earw,
+.right-earw {
+    top: -1vh;
+}
+
+
+
+.eye {
+    position: absolute;
+    top: 16vh;
+    width: 16vh;
+    height: 15vh;
+    background: white;
+    border-radius: 50%;
+    box-shadow:
+        0 0 0 0.25vh rgb(240, 240, 240),
+        0 0 0 0.25vh #aaaaaa,
+        /* 模拟二层轮廓 */
+        inset -0.5vh -1.5vh 0 rgb(116, 116, 116, 0.1),
+        inset 0.5vh 1.5vh 0 rgb(116, 116, 116, 0.1);
+
+}
+
+.eye.left {
+    left: 6vh;
+}
+
+.eye.right {
+    right: 6vh;
+    transform-origin: center;
+}
+
+
+.pupil {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 10vh;
+    height: 10vh;
+    background: #009999;
+    border-radius: 50%;
+    box-shadow:
+        0 0 0 0.8vh rgb(65, 65, 65),
+        0 0 0 0.5vh #000000,
+        /* 模拟二层轮廓 */
+        inset 1.5vh 2vh 0 #025c5c;
+}
+
+.pupilw {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 5vh;
+    height: 5vh;
+    background: #003030;
+    border-radius: 50%;
+    border: 0.5vh solid rgb(31, 31, 31);
+}
+
+.pupily {
+    position: absolute;
+    bottom: 2vh;
+    left: 20%;
+    transform: translate(-50%);
+    width: 1.5vh;
+    height: 1.5vh;
+    background: rgb(255, 255, 255);
+    border-radius: 50%;
+    border: 0.5vh solid rgb(231, 231, 231);
+}
+
+.mouth {
+    position: absolute;
+    bottom: 4vh;
+    left: 46%;
+    transform: translateX(-50%);
+    width: 3vh;
+    height: .75vh;
+    border-radius: 0 0 0% 0%;
+    z-index: 9;
+    background: rgb(0, 0, 0);
+    transform-origin: center top;
+    animation: openClose 10s infinite steps(1, start);
+    transform-origin: center top;
+
+}
+
+.hairTriangle {
+    position: absolute;
+    top: 2.5vh;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 19vh;
+    height: 4vh;
+    border-radius: 0 0 50% 50%;
+    z-index: 9;
+    background: #214D61;
+    clip-path: polygon(0% 0%, 100% 0%, 50% 100%);
+
+
+}
+
+@keyframes openClose {
+    0% {
+        transform: scaleY(0.05);
+    }
+
+    50% {
+        transform: scaleY(1);
+        visibility: visible;
+    }
+
+    100% {
+        transform: scaleY(0.05);
+    }
+}
+
+#canvas {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100vh;
+    z-index: 2;
+    /* 更高，发束在前 */
+    pointer-events: none;
+    /* 可选，避免遮挡鼠标事件 */
+}
+
+:root {
+    --circle-radius-vh: 12.5;
+    --circle-color: rgba(0, 0, 0, 0);
+    /* 透明 */
+    --ribbon-color: #214D61;
+    /* 眼睛  #009999 */
+}

@@ -2,7 +2,7 @@
             position: absolute;
             top: 2vh;
             left: 5vh;
-            width: 30vh;
+            width: auto;
             height: auto;
             display: flex;
             flex-direction: column;
@@ -17,11 +17,10 @@
             position: absolute;
             top: 2vh;
             right: 5vh;
-            width: 30vh;
+            width: auto;
             height: auto;
             display: flex;
             flex-direction: column;
-            /* ✅ 垂直排列 */
             justify-content: center;
             align-items: center;
             margin: 0 auto;

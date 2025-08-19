@@ -3,11 +3,13 @@ function enableDragScroll(element, options = {}) {
     const speedFactor = options.speedFactor ?? 0.65;
     const inertiaBoost = options.inertiaBoost ?? 1.6;
     const friction = options.friction ?? 0.93;
+    const dragThreshold = 5;
 
     let isDown = false;
     let startX;
     let scrollLeft;
     let lastWalk = 0;
+    let hasDragged = false;
 
     // 鼠标事件
     element.addEventListener("mousedown", (e) => {
@@ -36,9 +38,17 @@ function enableDragScroll(element, options = {}) {
         if (!isDown) return;
         const x = e.pageX - element.offsetLeft;
         const walk = (x - startX) * speedFactor;
-        lastWalk = walk * inertiaBoost;
-        element.scrollLeft = scrollLeft - walk;
+
+        if (!hasDragged && Math.abs(walk) > dragThreshold) {
+            hasDragged = true;
+        }
+
+        if (hasDragged) {
+            lastWalk = walk * inertiaBoost;
+            element.scrollLeft = scrollLeft - walk;
+        }
     });
+
 
     // 触控事件
     element.addEventListener("touchstart", (e) => {
@@ -59,9 +69,17 @@ function enableDragScroll(element, options = {}) {
         if (!isDown) return;
         const x = e.touches[0].pageX - element.offsetLeft;
         const walk = (x - startX) * speedFactor;
-        lastWalk = walk * inertiaBoost;
-        element.scrollLeft = scrollLeft - walk;
+
+        if (!hasDragged && Math.abs(walk) > dragThreshold) {
+            hasDragged = true;
+        }
+
+        if (hasDragged) {
+            lastWalk = walk * inertiaBoost;
+            element.scrollLeft = scrollLeft - walk;
+        }
     }, { passive: false });
+
 
     // 惯性滑动
     function applyInertia() {
@@ -85,7 +103,7 @@ window.addEventListener("DOMContentLoaded", () => {
         inertiaBoost: 1.2,
         friction: 0.9
     });
-        const imgwrap = document.getElementById("image-wrapper");
+    const imgwrap = document.getElementById("image-wrapper");
 
     enableDragScroll(imgwrap, {
         speedFactor: 0.85,
@@ -94,3 +112,14 @@ window.addEventListener("DOMContentLoaded", () => {
     });
 });
 
+function endDrag() {
+    if (!isDown) return;
+    isDown = false;
+    hasDragged = false;
+    element.classList.remove("dragging");
+    applyInertia();
+}
+
+window.addEventListener("mouseup", endDrag);
+element.addEventListener("mouseleave", endDrag);
+element.addEventListener("touchend", endDrag);

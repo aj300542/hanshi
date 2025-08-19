@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>cat</title>
+    <link rel="stylesheet" href="js/wuxianH.css">
+    <style>
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: transparent;
+            margin: 0;
+            overflow: visible;
+        }
+
+        ::-webkit-scrollbar {
+            display: none;
+        }
+
+        #moveBtn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 9999;
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="labubuElem" class="labubu">
+        <div class="labubuHairB"></div>
+        <div class="labubub">
+            <div class="labubuHair"></div>
+        </div>
+        <div class="hairTriangle"></div>
+        <div class="blush blush-left"></div>
+        <div class="blush blush-right"></div>
+        <div class="eyebrowB left"></div>
+        <div class="eyebrowB right"></div>
+        <div class="eyebrow left"></div>
+        <div class="eyebrow right"></div>
+        <div class="ear left-ear">
+            <div class="earw left-earw"></div>
+        </div>
+        <div class="ear right-ear">
+            <div class="earw right-earw"></div>
+        </div>
+
+
+        <div class="eye left">
+            <div class="pupil">
+                <div class="pupilw"></div>
+                <div class="pupily"></div>
+            </div>
+        </div>
+        <div class="eye right">
+            <div class="pupil">
+                <div class="pupilw"></div>
+                <div class="pupily"></div>
+            </div>
+        </div>
+        <div class="nose"></div>
+        <div class="mouth">
+            <div class="tooth left"></div>
+            <div class="tooth right"></div>
+        </div>1
+
+    </div>
+    <canvas id="canvas"></canvas>
+    <script>
+        const labubu = document.getElementById("labubuElem");
+
+        function jumpLabubu() {
+            const padding = 20;
+            const maxX = window.innerWidth - labubu.offsetWidth - padding;
+            const maxY = window.innerHeight - labubu.offsetHeight - padding;
+
+            const x = Math.floor(Math.random() * maxX) + padding;
+            const y = Math.floor(Math.random() * maxY) + padding;
+            const rotation = Math.random() * 20 - 10;
+
+            labubu.style.transform = `translate(${x}px, ${y}px) rotate(${rotation}deg)`;
+
+            // 发送位置给父页面
+            window.parent.postMessage({
+                type: "labubuPosition",
+                x: x + labubu.offsetWidth / 2,
+                y: y + labubu.offsetHeight / 2
+            }, "*");
+
+            const delay = Math.floor(Math.random() * 5000) + 3000; // 跳跃间隔更长
+
+            setTimeout(jumpLabubu, delay);
+        }
+
+        window.addEventListener("load", () => {
+            jumpLabubu();
+        });
+    </script>
+
+
+
+    <script src="js/hair.js"></script>
+</body>
+
+</html>

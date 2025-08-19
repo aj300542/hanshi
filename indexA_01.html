@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8" />
-    <title>寒食帖字图展示</title>
+    <title>米芾蜀素帖一</title>
     <link rel="stylesheet" href="js/styles.css">
     <link rel="stylesheet" href="js/pic.css">
     <style>
@@ -129,6 +129,15 @@
         <div class="hover-text">明 钱谷<br>东坡笠屐图》</div>
         <img src="charsa/char_022.jpg" style="width: 3vw;" />
     </div>
+        </div>
+        <div class="play-buttons">
+        <button id="demo-button">▶️</button>
+        <div id="speed-buttons">
+            <button data-speed="slow">慢</button>
+            <button data-speed="fast">快</button>
+        </div>
+        <button id="demo-status">⏹️</button>
+    </div>
     <script>
         const charsPath = "charsa/";
         const imgPath = "charsa/";
@@ -147,7 +156,7 @@
             window.location.href = "indexA_03.html";
         });
     </script>
-
+    <script src="js/playUI.js"></script>
     <script src="js/letter.js"></script>
     <script src="js/button2.js"></script>
     <script src="js/txt.js"></script>

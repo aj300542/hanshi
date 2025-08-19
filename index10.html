@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8" />
-    <title>寒食帖字图展示</title>
+    <title>祭侄文稿</title>
     <link rel="stylesheet" href="js/styles.css">
     <link rel="stylesheet" href="js/pic.css">
     <style>
@@ -77,11 +77,34 @@
             opacity: 1;
             text-align: left;
         }
+
+        #iframeContainer {
+            position: absolute;
+            width: 800px;
+            /* 缩小后的实际尺寸 */
+            height: 400px;
+            transform: scale(0.5);
+            transform-origin: top left;
+            z-index: 88;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+
+        #iframeIN {
+            width: 100%;
+            height: 100%;
+            border: none;
+            transition: opacity 0.3s ease, transform 0.6s ease;
+
+        }
     </style>
 </head>
 
 <body>
-
+    <div id="iframeContainer">
+        <iframe id="iframeIN" src="wuxianhead.html" frameborder="0"></iframe>
+    </div>
     <div class="image-wrapper-container">
         <div class="image-wrapper" id="image-wrapper">
             <img src="ziwen2.jpg" alt="背景图" />
@@ -104,6 +127,35 @@
             <button id="aj300">捐赠</button>
         </div>
     </div>
+    </div>
+    <div class="play-buttons">
+        <button id="demo-button">▶️</button>
+        <div id="speed-buttons">
+            <button data-speed="slow">慢</button>
+            <button data-speed="fast">快</button>
+        </div>
+        <button id="demo-status">⏹️</button>
+    </div>
+    <script>
+        window.addEventListener("message", (event) => {
+            if (event.data.type === "labubuPosition") {
+                const container = document.getElementById("iframeContainer");
+
+                const rect = container.getBoundingClientRect();
+                const padding = 20;
+
+                const maxX = window.innerWidth - rect.width - padding;
+                const maxY = window.innerHeight - rect.height - padding;
+
+                const x = Math.min(Math.max(event.data.x - rect.width / 2, padding), maxX);
+                const y = Math.min(Math.max(event.data.y - rect.height / 2, padding), maxY);
+
+                container.style.left = `${x}px`;
+                container.style.top = `${y}px`;
+                container.style.transform = `translate(0px, 0px)`; // 清除 transform
+            }
+        });
+    </script>
     <script>
         const charsPath = "chars10/";
         const imgPath = "chars10/";
@@ -114,7 +166,7 @@
         const originalHeight = 5784;
 
     </script>
-
+    <script src="js/playUI.js"></script>
     <script src="js/letter.js"></script>
     <script src="js/button2.js"></script>
     <script src="js/txt.js"></script>

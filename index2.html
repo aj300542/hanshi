@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8" />
-    <title>寒食帖字图展示</title>
+    <title>题苏轼寒食帖跋</title>
     <link rel="stylesheet" href="js/styles.css">
     <link rel="stylesheet" href="js/pic.css">
     <style>
@@ -99,10 +99,10 @@
         </div>
     </div>
     <div class="cover-small">
-        <img src="chars2/char_050.jpg" style="width: 8vw;" />
-        <img src="chars2/char_051.jpg" style="width: 8vw;" />
-        <img src="chars2/char_053.jpg" style="width: 8vw;" />
-        <img src="chars2/char_054.jpg" style="width: 8vw;" />
+        <img src="chars2/char_050.jpg" style="width: 6vw;" />
+        <img src="chars2/char_051.jpg" style="width: 6vw;" />
+        <img src="chars2/char_053.jpg" style="width: 6vw;" />
+        <img src="chars2/char_054.jpg" style="width: 6vw;" />
         </a>
         <div class="hover-text">
             东坡这首诗写得像李白，<br>
@@ -114,17 +114,24 @@
             要是东坡看到这幅字，<br>
             肯定会笑我在没有佛的地方自称尊者。
         </div>
-
-
     </div>
     <div class="cover-smallRu">
-        <img src="chars2/char_003.jpg" style="width: 8vw;" />
-        <img src="portrait/3明代钱谷《东坡笠屐图》.jpeg" style="width: 8vw;" alt="点击下载" />
+        <img src="chars2/char_003.jpg" style="width: 6vw;" />
+        <img src="portrait/3明代钱谷《东坡笠屐图》.jpeg" style="width: 6vw;" alt="点击下载" />
         </a>
 
         <div class="hover-text">明 钱谷<br>东坡笠屐图》</div>
-        <img src="chars2/char_046.jpg" style="width: 8vw;" />
+        <img src="chars2/char_046.jpg" style="width: 6vw;" />
     </div>
+    <div class="play-buttons">
+        <button id="demo-button">▶️</button>
+        <div id="speed-buttons">
+            <button data-speed="slow">慢</button>
+            <button data-speed="fast">快</button>
+        </div>
+        <button id="demo-status">0%</button>
+    </div>
+
     <script>
         const charsPath = "chars2/";
         const imgPath = "chars2/";
@@ -135,7 +142,12 @@
         const originalHeight = 3175;
 
     </script>
+    <script>
 
+    </script>
+
+
+    <script src="js/playUI.js"></script>
     <script src="js/letter.js"></script>
     <script src="js/button2.js"></script>
     <script src="js/txt.js"></script>

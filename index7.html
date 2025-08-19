@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8" />
-    <title>寒食帖字图展示</title>
+    <title>王献之中秋帖</title>
     <link rel="stylesheet" href="js/styles.css">
     <link rel="stylesheet" href="js/pic.css">
     <style>
@@ -56,7 +56,7 @@
             overflow-x: hidden;
             /* 防止外部滚动条 */
         }
-        
+
         .cover-small {
             background: rgb(168, 137, 97);
             width: auto;
@@ -116,6 +116,15 @@
             还是等待大军回来再说吧
         </div>
     </div>
+    </div>
+    <div class="play-buttons">
+        <button id="demo-button">▶️</button>
+        <div id="speed-buttons">
+            <button data-speed="slow">慢</button>
+            <button data-speed="fast">快</button>
+        </div>
+        <button id="demo-status">⏹️</button>
+    </div>
     <script>
         const charsPath = "chars7/";
         const imgPath = "chars7/";
@@ -126,6 +135,7 @@
         const originalHeight = 1289;
 
     </script>
+    <script src="js/playUI.js"></script>
     <script src="js/letter.js"></script>
     <script src="js/button2.js"></script>
     <script src="js/txt.js"></script>

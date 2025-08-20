@@ -3,41 +3,28 @@ document.getElementById("about-button").addEventListener("click", () => {
     window.open("https://aj300542.github.io/", "_blank");
 });
 
-document.getElementById("index2").addEventListener("click", () => {
-    window.location.href = "index2.html";
-});
-document.getElementById("index3").addEventListener("click", () => {
-    window.location.href = "index3.html";
-});
-document.getElementById("index4").addEventListener("click", () => {
-    window.location.href = "index4.html";
-});
-document.getElementById("index5").addEventListener("click", () => {
-    window.location.href = "index5.html";
-});
-document.getElementById("index6").addEventListener("click", () => {
-    window.location.href = "index6.html";
-});
-document.getElementById("index7").addEventListener("click", () => {
-    window.location.href = "index7.html";
-});
-document.getElementById("index8").addEventListener("click", () => {
-    window.location.href = "index8.html";
-});
-document.getElementById("index9").addEventListener("click", () => {
-    window.location.href = "index9.html";
-});
-document.getElementById("index10").addEventListener("click", () => {
-    window.location.href = "index10.html";
-});
-document.getElementById("indexA_01").addEventListener("click", () => {
-    window.location.href = "indexA_01.html";
-});
-document.getElementById("indexB").addEventListener("click", () => {
-    window.location.href = "indexB.html";
-});
-document.getElementById("aj300").addEventListener("click", () => {
-    window.open("https://aj300542.github.io/download.html", "_blank");
+const buttonMap = {
+    index2: "index2.html",
+    index3: "index3.html",
+    index4: "index4.html",
+    index5: "index5.html",
+    index6: "index6.html",
+    index7: "index7.html",
+    index8: "index8.html",
+    index9: "index9.html",
+    index10: "index10.html",
+    indexA_01: "indexA_01.html",
+    indexB: "indexB.html",
+    indexC: "indexC.html",
+};
+
+Object.entries(buttonMap).forEach(([id, url]) => {
+    const btn = document.getElementById(id);
+    if (btn) {
+        btn.addEventListener("click", () => {
+            window.location.href = url;
+        });
+    }
 });
 
 

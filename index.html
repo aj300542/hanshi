@@ -90,6 +90,47 @@
             opacity: 0.64;
             transition: opacity 1s ease;
         }
+
+        .scroll-menu {
+            position: absolute;
+            bottom: 100%;
+            /* 从按钮底部向上展开 */
+            right: 0;
+            background: #f9f9f9;
+            border: 1px solid #ccc;
+            width: 160px;
+            display: none;
+            animation: slideUp 0.3s ease-out forwards;
+            z-index: 10;
+        }
+
+        .scroll-menu ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .scroll-menu li {
+            padding: 8px 12px;
+            cursor: pointer;
+            border-bottom: 1px solid #eee;
+        }
+
+        .scroll-menu li:hover {
+            background-color: #e6f7ff;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
     </style>
 
 <body>
@@ -107,16 +148,22 @@
     <div id="poemT-line"></div>
     <div class="thumb-bar" id="thumb-bar"></div>
     <div class="ui-buttons">
-        <div class="left-buttons">
+        <div class="left-buttons" style="position: relative;">
             <button id="about-button">aj300542</button>
             <button id="pictureoff">苏东坡画像</button>
+            <button id="longScrollBtn" onclick="toggleLongScrollList()">长幅作品</button>
+            <div id="longScrollList" class="scroll-menu">
+                <ul>
+                    <li onclick="handleLongScrollSelect('index8')">黄庭坚松风阁诗卷</li>
+                    <li onclick="handleLongScrollSelect('indexA_01')">米芾蜀素帖</li>
+                    <li onclick="handleLongScrollSelect('indexB')">鹡鸰颂</li>
+                    <li onclick="handleLongScrollSelect('indexC')">行书赤壁二赋册</li>
+                </ul>
+            </div>
         </div>
         <div class="right-buttons">
-            <button id="indexB">鹡鸰颂</button>
-            <button id="indexA_01">米芾蜀素帖</button>
             <button id="index10">祭侄文稿</button>
             <button id="index9">王珣伯远帖</button>
-            <button id="index8">黄庭坚松风阁诗卷</button>
             <button id="index7">王献之中秋帖</button>
             <button id="index6">快雪时晴帖</button>
             <button id="index5">平安何如奉橘帖</button>
@@ -225,6 +272,29 @@
                 img.addEventListener("load", scrollToRight);
             }
         });
+    </script>
+    <script>
+        function toggleLongScrollList() {
+            const list = document.getElementById("longScrollList");
+            list.style.display = list.style.display === "block" ? "none" : "block";
+        }
+
+        function handleLongScrollSelect(id) {
+            const urlMap = {
+                index8: "index8.html",
+                indexA_01: "indexA_01.html",
+                indexB: "indexB.html",
+                indexC: "indexC.html"
+            };
+
+            if (urlMap[id]) {
+                window.location.href = urlMap[id];
+            }
+
+            document.getElementById("longScrollList").style.display = "none";
+        }
+
+
     </script>
     <script src="js/playUI.js"></script>
     <script src="js/letter.js"></script>

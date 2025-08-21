@@ -152,7 +152,7 @@
             <button id="about-button">aj300542</button>
             <button id="pictureoff">苏东坡画像</button>
             <button id="longScrollBtn" onclick="toggleLongScrollList()">长幅作品</button>
-            <div id="longScrollList" class="scroll-menu">
+            <div id="LongScrollList" class="scroll-menu" style="right: 0;">
                 <ul>
                     <li onclick="handleLongScrollSelect('index8')">黄庭坚松风阁诗卷</li>
                     <li onclick="handleLongScrollSelect('indexA_01')">米芾蜀素帖</li>
@@ -161,14 +161,19 @@
                 </ul>
             </div>
         </div>
-        <div class="right-buttons">
-            <button id="index10">祭侄文稿</button>
-            <button id="index9">王珣伯远帖</button>
-            <button id="index7">王献之中秋帖</button>
-            <button id="index6">快雪时晴帖</button>
-            <button id="index5">平安何如奉橘帖</button>
-            <button id="index4">王羲之远宦帖</button>
-            <button id="index3">双钩填墨行穰帖</button>
+        <div class="right-buttons" style="position: relative;">
+            <button id="ShortScrollBtn" onclick="toggleShortScrollList()">短幅作品</button>
+            <div id="ShortScrollList" class="scroll-menu" style="left: 0;">
+                <ul>
+                    <li onclick="handleShortScrollSelect('index10')">祭侄文稿</li>
+                    <li onclick="handleShortScrollSelect('index9')">王珣伯远帖</li>
+                    <li onclick="handleShortScrollSelect('index7')">王献之中秋帖</li>
+                    <li onclick="handleShortScrollSelect('index6')">平安何如奉橘帖</li>
+                    <li onclick="handleShortScrollSelect('index5')">王羲之远宦帖</li>
+                    <li onclick="handleShortScrollSelect('index4')">双钩填墨行穰帖</li>
+                    <li onclick="handleShortScrollSelect('index3')">快雪时晴帖</li>
+                </ul>
+            </div>
             <button id="index2">题苏轼寒食帖跋</button>
             <button id="aj300">捐赠</button>
         </div>
@@ -275,7 +280,8 @@
     </script>
     <script>
         function toggleLongScrollList() {
-            const list = document.getElementById("longScrollList");
+            document.getElementById("ShortScrollList").style.display = "none";
+            const list = document.getElementById("LongScrollList");
             list.style.display = list.style.display === "block" ? "none" : "block";
         }
 
@@ -292,6 +298,29 @@
             }
 
             document.getElementById("longScrollList").style.display = "none";
+        }
+        function toggleShortScrollList() {
+            document.getElementById("LongScrollList").style.display = "none";
+            const list = document.getElementById("ShortScrollList");
+            list.style.display = list.style.display === "block" ? "none" : "block";
+        }
+        function handleShortScrollSelect(id) {
+            const urlMap = {
+                index2: "index2.html",
+                index3: "index3.html",
+                index4: "index4.html",
+                index5: "index5.html",
+                index6: "index6.html",
+                index7: "index7.html",
+                index9: "index9.html",
+                index10: "index10.html"
+            };
+
+            if (urlMap[id]) {
+                window.location.href = urlMap[id];
+            }
+
+            document.getElementById("ShortScrollList").style.display = "none";
         }
 
 

@@ -52,7 +52,7 @@
 
 <body>
     <div class="image-wrapper" id="image-wrapper">
-        <img src="cibi1.jpg" alt="背景图" />
+        <img src="cibi4.jpg" alt="背景图" />
         <div style="width:5062px; height:1px;"></div>
     </div>
 
@@ -70,10 +70,7 @@
             <button id="about-button">aj300542</button>
         </div>
         <div class="right-buttons">
-            <button id="indexC_03">赤壁赋第四页</button>
-            <button id="indexC_02">赤壁赋第三页</button>
-            <button id="indexC_01">赤壁赋第二页</button>
-            <button id="home">返回主页</button>
+            <button id="indexC">返回主帖</button>
             <button id="aj300">捐赠</button>
         </div>
     </div>
@@ -87,12 +84,12 @@
         <button id="demo-status">⏹️</button>
     </div>
     <script>
-        const charsPath = "charsc/";
-        const imgPath = "charsc/";
-        const boxImgPath = "charsc/";
-        const txtPath = "charsc/txt.json";
-        const wufoPath = "charsc/cibi.json";
-        const originalWidth = 11174;
+        const charsPath = "charsc03/";
+        const imgPath = "charsc03/";
+        const boxImgPath = "charsc03/";
+        const txtPath = "charsc03/txt.json";
+        const wufoPath = "charsc03/cibi4.json";
+        const originalWidth = 10951;
         const originalHeight = 2991;
     </script>
     <script>
@@ -116,17 +113,10 @@
         });
     </script>
     <script>
-        document.getElementById("indexC_01").addEventListener("click", () => {
-            window.location.href = "indexC_01.html";
-        });
-        document.getElementById("indexC_02").addEventListener("click", () => {
-            window.location.href = "indexC_02.html";
-        });
-        document.getElementById("indexC_03").addEventListener("click", () => {
-            window.location.href = "indexC_03.html";
+        document.getElementById("indexC").addEventListener("click", () => {
+            window.location.href = "indexC.html";
         });
     </script>
-
     <script src="js/playUI.js"></script>
     <script src="js/letter.js"></script>
     <script src="js/button2.js"></script>

@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>金琮古贤诗意图卷第四</title>
+    <link rel="stylesheet" href="js/styles.css">
+    <link rel="stylesheet" href="js/pic.css">
+    <style>
+        .background {
+            width: 100vw;
+            overflow: hidden;
+            display: block;
+            /* 改为 block，避免 flex 撑开子元素 */
+            justify-content: flex-start;
+            align-items: flex-start;
+            padding: 0;
+            margin: 0;
+
+        }
+
+
+        .image-wrapper {
+            position: relative;
+            /* 关键：让 box 以图像为参考定位 */
+            width: 100vw;
+            max-width: 100vw;
+            overflow-x: auto;
+            overflow-y: hidden;
+            scroll-behavior: smooth;
+            display: flex;
+            flex-direction: row;
+        }
+
+
+        .image-wrapper img {
+            height: 70vh;
+            max-height: 80vh;
+            width: 5062px;
+            /* 或者 width: 100%; max-width: none; */
+            max-width: none !important;
+            display: inline-block;
+        }
+
+        .image-wrapper.dragging,
+        #thumb-bar.dragging {
+            cursor: grabbing;
+            user-select: none;
+        }
+
+        .scroll-buttons {
+            position: fixed;
+            top: 50%;
+            left: 0;
+            right: 0;
+            z-index: 999;
+            display: flex;
+            justify-content: space-between;
+            pointer-events: none;
+            /* 允许图像拖拽不受阻碍 */
+        }
+
+        .scroll-buttons button {
+            pointer-events: auto;
+            background-color: rgba(255, 255, 255, 0.8);
+            border: none;
+            font-size: 2rem;
+            padding: 1rem;
+            cursor: pointer;
+            border-radius: 0.5rem;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s;
+        }
+
+        .scroll-buttons button:hover {
+            background-color: rgba(240, 240, 240, 1);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="scroll-buttons">
+        <button id="scroll-left">◀</button>
+        <button id="scroll-right">▶</button>
+    </div>
+
+    <div id="image-wrapper" class="image-wrapper">
+
+        <img src="jin4.jpg" alt="背景图" />
+
+    </div>
+
+    <div id="box-preview"></div>
+
+    <div class="scroll-container">
+        <div class="scroll-line" id="scroll-line"></div>
+    </div>
+    <div class="preview" id="preview"></div>
+    <div class="poem-line" id="poem-line"></div>
+    <div id="poemT-line"></div>
+    <div class="thumb-bar" id="thumb-bar"></div>
+    <div class="ui-buttons">
+        <div class="left-buttons">
+            <button id="about-button">aj300542</button>
+        </div>
+        <div class="right-buttons">
+            <button id="indexF">返回主帖</button>
+            <button id="aj300">捐赠</button>
+        </div>
+    </div>
+    </div>
+    <div class="play-buttons">
+        <button id="demo-button">▶️</button>
+        <div id="speed-buttons">
+            <button data-speed="slow">慢</button>
+            <button data-speed="fast">快</button>
+        </div>
+        <button id="demo-status">⏹️</button>
+    </div>
+    <script>
+        const charsPath = "charsf03/";
+        const imgPath = "charsf03/";
+        const boxImgPath = "charsf03/";
+        const txtPath = "charsf03/txt.json";
+        const wufoPath = "charsf03/jin4.json";
+        const originalWidth = 14232;
+        const originalHeight = 3758;
+    </script>
+    <script>
+        const img = document.querySelector(".image-wrapper img");
+        img.style.width = "5062px";
+
+        window.addEventListener("load", () => {
+            const wrapper = document.querySelector(".image-wrapper");
+            const img = wrapper.querySelector("img");
+
+            const scrollToRight = () => {
+                wrapper.scrollLeft = wrapper.scrollWidth;
+                console.log("Scrolled to right:", wrapper.scrollLeft);
+            };
+
+            if (img.complete) {
+                scrollToRight();
+            } else {
+                img.addEventListener("load", scrollToRight);
+            }
+        });
+    </script>
+    <script>
+        window.addEventListener("DOMContentLoaded", () => {
+            const wrapper = document.getElementById("image-wrapper");
+            const scrollStep = 200;
+
+            document.getElementById("scroll-left").addEventListener("click", () => {
+                wrapper.scrollBy({ left: -scrollStep, behavior: "smooth" });
+            });
+
+            document.getElementById("scroll-right").addEventListener("click", () => {
+                wrapper.scrollBy({ left: scrollStep, behavior: "smooth" });
+            });
+        });
+    </script>
+    <script>
+        document.getElementById("indexF").addEventListener("click", () => {
+            window.location.href = "indexF.html";
+        });
+    </script>
+    <script src="js/playUI.js"></script>
+    <script src="js/letter.js"></script>
+    <script src="js/button2.js"></script>
+    <script src="js/controls.js"></script>
+    <script src="js/txtlong.js"></script>
+    <script src="js/chars.js"></script>
+</body>
+
+</html>

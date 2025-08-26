@@ -302,7 +302,7 @@ Promise.all([
                     const scrollLeft = boxCenterX - wrapperCenterX;
 
                     // ✅ 使用 wrapper 宽度动态计算阈值（例如 10%）
-                    const threshold = wrapper.clientWidth * 0.1; // 10% 宽度
+                    const threshold = wrapper.clientWidth * 0.08; // 10% 宽度
                     const deltaX = lastScrollX === null ? Infinity : Math.abs(boxCenterX - lastScrollX);
 
                     if (deltaX > threshold) {

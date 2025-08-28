@@ -157,6 +157,33 @@ Promise.all([
                     updatePreview(boxDiv.dataset.filename, e.clientX, e.clientY);
                 });
 
+                // ✅ 触摸屏支持：在 image-wrapper 上触摸时检测 box
+                wrapper.addEventListener("touchstart", handleTouchMove, { passive: false });
+                wrapper.addEventListener("touchmove", handleTouchMove, { passive: false });
+
+                function handleTouchMove(e) {
+                    const touch = e.touches[0];
+                    const rect = bgImg.getBoundingClientRect();
+                    const x = touch.clientX - rect.left;
+                    const y = touch.clientY - rect.top;
+
+                    let found = false;
+
+                    boxElements.forEach(({ element, x: bx, y: by, width, height }) => {
+                        const inside = x >= bx && x <= bx + width && y >= by && y <= by + height;
+                        element.style.display = inside ? "block" : "none";
+                        if (inside) {
+                            const filename = element.dataset.filename;
+                            updatePreview(filename, touch.clientX, touch.clientY);
+                            found = true;
+                        }
+                    });
+
+                    if (!found) {
+                        preview2.style.display = "none";
+                        preview2.innerHTML = "";
+                    }
+                }
                 boxDiv.addEventListener("mouseleave", () => {
                     preview2.style.display = "none";
                     preview2.innerHTML = "";
@@ -204,6 +231,16 @@ Promise.all([
                     img.onerror = () => {
                         alert("❌ 图片加载失败");
                     };
+                });
+                boxDiv.addEventListener("touchstart", () => {
+                    longPressTimer = setTimeout(() => {
+                        // 模拟双击下载
+                        boxDiv.dispatchEvent(new Event("dblclick"));
+                    }, 600);
+                });
+
+                boxDiv.addEventListener("touchend", () => {
+                    clearTimeout(longPressTimer);
                 });
 
                 wrapper.appendChild(boxDiv);

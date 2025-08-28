@@ -47,6 +47,10 @@
 
         .overlay-box {
             border-radius: 25%;
+            min-width: 40px;
+            min-height: 40px;
+            touch-action: manipulation;
+
         }
 
         .thumb-bar {
@@ -65,14 +69,14 @@
             user-select: none;
             overflow-y: hidden;
             pointer-events: auto;
-            touch-action: none;
+            touch-action: pan-x;
             user-select: none;
         }
 
 
 
         #image-wrapper {
-            touch-action: none;
+            touch-action: pan-x;
             user-select: none;
             cursor: grab;
         }

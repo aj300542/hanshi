@@ -298,7 +298,12 @@ Promise.all([
                 }
             });
         }
-
+        // ✅ 添加 resize 监听器（放在 renderBoxes 定义之后）
+        window.addEventListener("resize", () => {
+            boxElements.forEach(({ element }) => element.remove());
+            boxElements = [];
+            renderBoxes();
+        });
         if (bgImg.complete) {
             renderBoxes();
         } else {

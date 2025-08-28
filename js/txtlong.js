@@ -318,11 +318,17 @@ Promise.all([
                     setTimeout(() => targetBox.classList.remove("highlight"), 1000);
                 }
             });
+
             // ✅ 所有 box 渲染完毕，通知拖拽系统初始化
             window.dispatchEvent(new Event("dragReady"));
 
         }
-
+        // ✅ 添加 resize 监听器（放在 renderBoxes 定义之后）
+        window.addEventListener("resize", () => {
+            boxElements.forEach(({ element }) => element.remove());
+            boxElements = [];
+            renderBoxes();
+        });
         if (bgImg.complete) {
             renderBoxes();
         } else {

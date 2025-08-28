@@ -198,6 +198,8 @@ Promise.all([
             wrapper.appendChild(label);
             thumbBar.appendChild(wrapper);
         });
+        // ✅ 所有字符渲染完成后，通知拖拽系统初始化
+        window.dispatchEvent(new Event("dragReady"));
         // ✅ 放在这里，紧跟在 thumbBar 渲染之后
         window.addEventListener("hoverOnBox", (e) => {
             const { filename } = e.detail;

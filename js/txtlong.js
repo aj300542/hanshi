@@ -318,6 +318,8 @@ Promise.all([
                     setTimeout(() => targetBox.classList.remove("highlight"), 1000);
                 }
             });
+            // ✅ 所有 box 渲染完毕，通知拖拽系统初始化
+            window.dispatchEvent(new Event("dragReady"));
 
         }
 

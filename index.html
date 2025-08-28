@@ -28,7 +28,6 @@
             max-width: 100vw;
             overflow-x: auto;
             overflow-y: hidden;
-            scroll-behavior: smooth;
             display: flex;
             flex-direction: row;
         }
@@ -162,7 +161,7 @@
                     <li onclick="handleLongScrollSelect('indexC')">行书赤壁二赋册</li>
                     <li onclick="handleLongScrollSelect('indexD')">离骚经册</li>
                     <li onclick="handleLongScrollSelect('indexF')">金琮古贤诗意图卷</li>
-                </ul>
+                    <li onclick="handleLongScrollSelect('indexG')">司马光拜左仆射告身卷</li>
             </div>
         </div>
         <div class="right-buttons" style="position: relative;">
@@ -297,7 +296,8 @@
                 indexB: "indexB.html",
                 indexC: "indexC.html",
                 indexD: "indexD.html",
-                indexF: "indexF.html"
+                indexF: "indexF.html",
+                indexG: "indexG.html",
             };
 
             if (urlMap[id]) {
@@ -339,7 +339,7 @@
     <script src="js/button.js"></script>
     <script src="js/txtlong.js"></script>
     <script src="js/chars.js"></script>
-    <script src="js/controls.js"></script>
+    <script src="js/control.js"></script>
 </body>
 
 </html>

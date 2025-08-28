@@ -3,9 +3,10 @@
 
 <head>
     <meta charset="UTF-8" />
-    <title>黄庭坚诗第七</title>
+    <title>司马光拜左仆射告身卷</title>
     <link rel="stylesheet" href="js/styles.css">
     <link rel="stylesheet" href="js/pic.css">
+    <link rel="stylesheet" href="js/wuxianH.css">
     <style>
         .background {
             width: 100vw;
@@ -85,7 +86,7 @@
 
     <div id="image-wrapper" class="image-wrapper">
 
-        <img src="jin9.jpg" alt="背景图" />
+        <img src="sima1.jpg" alt="背景图" />
 
     </div>
 
@@ -103,9 +104,21 @@
             <button id="about-button">aj300542</button>
         </div>
         <div class="right-buttons">
-            <button id="indexF">返回主帖</button>
+            <button id="indexG_03">拜左仆射告身卷第四页</button>
+            <button id="indexG_02">拜左仆射告身卷第三页</button>
+            <button id="indexG_01">拜左仆射告身卷第二页</button>
+            <button id="home">返回主页</button>
             <button id="aj300">捐赠</button>
         </div>
+    </div>
+    <div class="cover-smallRu">
+        <img src="portrait/sima.png" style="width: 8vw;" alt="点击下载" />
+        <div class="name-contain">
+            <img src="charsg/char_097.jpg" style="width: 2vw;" />
+            <img src="charsg/char_098.jpg" style="width: 3vw;" />
+            <img src="charsg/char_099.jpg" style="width: 3vw;" />
+        </div>
+
     </div>
     </div>
     <div class="play-buttons">
@@ -117,13 +130,13 @@
         <button id="demo-status">⏹️</button>
     </div>
     <script>
-        const charsPath = "charsf08/";
-        const imgPath = "charsf08/";
-        const boxImgPath = "charsf08/";
-        const txtPath = "charsf08/txt.json";
-        const wufoPath = "charsf08/jin9.json";
-        const originalWidth = 14566;
-        const originalHeight = 3758;
+        const charsPath = "charsg/";
+        const imgPath = "charsg/";
+        const boxImgPath = "charsg/";
+        const txtPath = "charsg/txt.json";
+        const wufoPath = "charsg/sima1.json";
+        const originalWidth = 7863;
+        const originalHeight = 2038;
     </script>
     <script>
         const img = document.querySelector(".image-wrapper img");
@@ -160,10 +173,20 @@
         });
     </script>
     <script>
-        document.getElementById("indexF").addEventListener("click", () => {
-            window.location.href = "indexF.html";
-        });
+        for (let i = 1; i <= 3; i++) {
+            const id = `indexG_0${i}`;
+            document.getElementById(id)?.addEventListener("click", () => {
+                window.location.href = `${id}.html`;
+            });
+        }
+
     </script>
+    <script>
+
+    </script>
+
+
+    <script src="js/move_pic.js"></script>
     <script src="js/playUI.js"></script>
     <script src="js/letter.js"></script>
     <script src="js/button2.js"></script>

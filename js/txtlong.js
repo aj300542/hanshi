@@ -245,16 +245,6 @@ Promise.all([
                     height
                 });
             });
-            boxDiv.addEventListener("touchstart", () => {
-                longPressTimer = setTimeout(() => {
-                    // 模拟双击下载
-                    boxDiv.dispatchEvent(new Event("dblclick"));
-                }, 600);
-            });
-
-            boxDiv.addEventListener("touchend", () => {
-                clearTimeout(longPressTimer);
-            });
 
             // ✅ 鼠标在 image-wrapper 上移动时自动检测 box
             wrapper.addEventListener("mousemove", (e) => {
@@ -375,3 +365,4 @@ Promise.all([
     .catch(err => {
         console.error("❌ 加载失败:", err);
     });
+

@@ -167,6 +167,7 @@
             </div>
         </div>
         <div class="right-buttons" style="position: relative;">
+            <button id="ccnote">书法小纸条</button>
             <button id="ShortScrollBtn" onclick="toggleShortScrollList()">短幅作品</button>
             <div id="ShortScrollList" class="scroll-menu" style="left: 0;">
                 <ul>
@@ -336,6 +337,10 @@
             document.getElementById("ShortScrollList").style.display = "none";
         }
 
+
+        document.getElementById("ccnote").addEventListener("click", () => {
+            window.open("https://aj300542.github.io/cc", "_blank");
+        });
 
     </script>
 

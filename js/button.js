@@ -28,6 +28,7 @@ const buttonMap = {
     indexN: "indexO.html",
     indexP: "indexP.html",
     indexQ: "indexQ.html",
+    indexR: "indexR.html",
 };
 
 Object.entries(buttonMap).forEach(([id, url]) => {

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>赵孟頫雪晴云散帖</title>
+    <link rel="stylesheet" href="js/styles.css">
+    <link rel="stylesheet" href="js/pic.css">
+    <style>
+        .background {
+            width: 100vw;
+            overflow: hidden;
+            display: block;
+            /* 改为 block，避免 flex 撑开子元素 */
+            justify-content: flex-start;
+            align-items: flex-start;
+            padding: 0;
+            margin: 0;
+
+        }
+
+        .image-wrapper {
+            position: relative;
+
+            /* ✅ 让它根据内容宽度自适应 */
+            max-width: none;
+            overflow-x: auto;
+            overflow-y: hidden;
+            display: inline-flex;
+            flex-direction: row;
+        }
+
+        .image-wrapper img {
+            height: 68vh;
+            max-height: 80vh;
+            width: 3503;
+            /* 或者 width: 100%; max-width: none; */
+            max-width: none !important;
+            display: inline-block;
+        }
+
+        .image-wrapper.dragging,
+        #thumb-bar.dragging {
+            cursor: grabbing;
+            user-select: none;
+        }
+
+        .image-wrapper-container {
+            width: 100vw;
+            display: flex;
+            justify-content: center;
+            /* ✅ 水平居中 */
+            overflow-x: hidden;
+            /* 防止外部滚动条 */
+        }
+
+        .cover-small {
+            background: rgb(168, 137, 97);
+            width: auto;
+        }
+
+        .cover-smallRu {
+            background: rgb(168, 137, 97);
+            width: auto;
+        }
+
+        .cover-smallRu:hover .hover-text {
+            opacity: 1;
+            text-align: left;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="image-wrapper-container">
+        <div class="image-wrapper" id="image-wrapper">
+            <img src="xueqys.jpg" alt="背景图" />
+        </div>
+    </div>
+    <div id="box-preview"></div>
+    <div class="scroll-container">
+        <div class="scroll-line" id="scroll-line"></div>
+    </div>
+    <div class="preview" id="preview"></div>
+    <div class="poem-line" id="poem-line"></div>
+    <div id="poemT-line"></div>
+    <div class="thumb-bar" id="thumb-bar"></div>
+    <div class="ui-buttons">
+        <div class="left-buttons">
+            <button id="about-button">aj300542</button>
+        </div>
+        <div class="right-buttons">
+            <button id="home">返回主页</button>
+            <button id="aj300">捐赠</button>
+        </div>
+    </div>
+    <div class="cover-small">
+        <img src="charsw/char_018.jpg" style="width: 6vw;" />
+        <img src="portrait/zmx02.jpg" style="width: 18vw;" alt="点击下载" />
+
+        </a>
+
+        <div class="hover-text">赵孟頫<br>《人骑图》</div>
+    </div>
+    <div class="cover-smallRu">
+        <img src="portrait/zmx01.jpg" style="width: 18vw;" alt="点击下载" />
+        </a>
+
+        <div class="hover-text">清禹之鼎摹<br>《赵魏公小像》</div>
+
+    </div>
+    <div class="play-buttons">
+        <button id="demo-button">▶️</button>
+        <div id="speed-buttons">
+            <button data-speed="slow">慢</button>
+            <button data-speed="fast">快</button>
+        </div>
+        <button id="demo-status">0%</button>
+    </div>
+
+    <script>
+        const charsPath = "charsw/";
+        const imgPath = "charsw/";
+        const boxImgPath = "charsw/";
+        const txtPath = "charsw/txt.json";
+        const wufoPath = "charsw/renumbered_boxes.json";
+        const originalWidth = 2123;
+        const originalHeight = 4476;
+
+    </script>
+
+
+
+    <script src="js/playUI.js"></script>
+    <script src="js/letter.js"></script>
+    <script src="js/button2.js"></script>
+    <script src="js/txt.js"></script>
+    <script src="js/chars.js"></script>
+    <script src="js/controls.js"></script>
+</body>
+
+</html>

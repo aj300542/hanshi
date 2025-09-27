@@ -32,8 +32,10 @@ const buttonMap = {
     indexS: "indexS.html",
     indexT: "indexT.html",
     indexU: "indexU.html",
-    indexV: "indexV.html",    
-    indexW: "indexW.html",    
+    indexV: "indexV.html",
+    indexW: "indexW.html",
+    indexX: "indexX.html",
+    indexY: "indexY.html",
 };
 
 Object.entries(buttonMap).forEach(([id, url]) => {

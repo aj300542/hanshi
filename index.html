@@ -92,17 +92,20 @@
         }
 
         .scroll-menu {
+            display: none;
+            /* 初始隐藏 */
             position: absolute;
             bottom: 100%;
-            /* 从按钮底部向上展开 */
             right: 0;
             background: #f9f9f9;
             border: 1px solid #ccc;
-            width: 160px;
-            display: none;
             animation: slideUp 0.3s ease-out forwards;
             z-index: 10;
+            flex-direction: row;
+            gap: 10px;
+            padding: 10px;
         }
+
 
         .scroll-menu ul {
             list-style: none;
@@ -169,6 +172,7 @@
                     <li onclick="handleLongScrollSelect('indexR')">💡米芾真迹</li>
                     <li onclick="handleLongScrollSelect('indexX')">🏞️苏轼前赤壁赋</li>
                     <li onclick="handleLongScrollSelect('indexZ')">🪷黄庭坚书寒山子庞居士诗卷</li>
+                    <li onclick="handleLongScrollSelect('index01')">🫖欧阳修集古录跋</li>
             </div>
         </div>
         <div class="right-buttons" style="position: relative;">
@@ -301,10 +305,33 @@
     </script>
     <script>
         function toggleLongScrollList() {
-            document.getElementById("ShortScrollList").style.display = "none";
+            // 自动关闭画像
+            portraitContainer.style.display = "none";
+            portraitVisible = false;
+            pictureToggleButton.textContent = "开启画像";
+
             const list = document.getElementById("LongScrollList");
-            list.style.display = list.style.display === "block" ? "none" : "block";
+            const allItems = Array.from(list.querySelectorAll("ul li"));
+            const maxPerColumn = 15;
+
+            if (list.dataset.processed !== "true") {
+                const columns = [];
+                for (let i = 0; i < allItems.length; i += maxPerColumn) {
+                    const column = document.createElement("div");
+                    column.className = "scroll-column";
+                    const ul = document.createElement("ul");
+                    allItems.slice(i, i + maxPerColumn).forEach(item => ul.appendChild(item));
+                    column.appendChild(ul);
+                    columns.push(column);
+                }
+                list.innerHTML = ""; // 清空原始内容
+                columns.forEach(col => list.appendChild(col));
+                list.dataset.processed = "true"; // 防止重复处理
+            }
+
+            list.style.display = list.style.display === "flex" ? "none" : "flex";
         }
+
 
         function handleLongScrollSelect(id) {
             const urlMap = {
@@ -323,6 +350,7 @@
                 indexU: "indexU.html",
                 indexX: "indexX.html",
                 indexZ: "indexZ.html",
+                index01: "index01_oyxjg.html",
             };
 
             if (urlMap[id]) {

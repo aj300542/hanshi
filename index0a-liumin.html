@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>周臣流民图卷</title>
+    <link rel="stylesheet" href="js/styles.css">
+    <link rel="stylesheet" href="js/pic.css">
+    <style>
+        .background {
+            width: 100vw;
+            overflow: hidden;
+            display: block;
+            /* 改为 block，避免 flex 撑开子元素 */
+            justify-content: flex-start;
+            align-items: flex-start;
+            padding: 0;
+            margin: 0;
+
+        }
+
+        .image-wrapper {
+            position: relative;
+
+            /* ✅ 让它根据内容宽度自适应 */
+            max-width: none;
+            overflow-x: auto;
+            overflow-y: hidden;
+            display: inline-flex;
+            flex-direction: row;
+        }
+
+        .image-wrapper img {
+            height: 68vh;
+            max-height: 80vh;
+            width: 3503;
+            /* 或者 width: 100%; max-width: none; */
+            max-width: none !important;
+            display: inline-block;
+        }
+
+        .image-wrapper.dragging,
+        #thumb-bar.dragging {
+            cursor: grabbing;
+            user-select: none;
+        }
+
+        .image-wrapper-container {
+            width: 100vw;
+            display: flex;
+            justify-content: center;
+            /* ✅ 水平居中 */
+            overflow-x: hidden;
+            /* 防止外部滚动条 */
+        }
+
+        .cover-left,
+        .cover-right {
+            position: absolute;
+            top: 2vh;
+            width: auto;
+            height: auto;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(2, auto);
+            gap: 1vh;
+            border-radius: 3vh;
+            overflow: hidden;
+            background: rgb(168, 137, 97);
+            padding: 2vh;
+        }
+
+        .cover-left {
+            left: 5vh;
+        }
+
+        .cover-right {
+            right: 5vh;
+        }
+
+        .cover-left img,
+        .cover-right img {
+            width: 14vh;
+            height: auto;
+            object-fit: contain;
+            border-radius: 1vh;
+            cursor: pointer;
+        }
+
+        /* 中间放大图容器 */
+        .picpreview {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 999;
+            display: none;
+            padding: 1vh;
+            background: rgba(255, 255, 255, 0.95);
+            border: 2px solid #aaa;
+            border-radius: 2vh;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .picpreview img {
+            width: 25vw;
+            height: auto;
+            border: 2px solid rgb(163, 163, 163);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="image-wrapper-container">
+        <div class="image-wrapper" id="image-wrapper">
+            <img src="liumin2.jpg" alt="背景图" />
+        </div>
+    </div>
+    <div id="box-preview"></div>
+    <div class="scroll-container">
+        <div class="scroll-line" id="scroll-line"></div>
+    </div>
+    <div class="preview" id="preview"></div>
+    <div class="poem-line" id="poem-line"></div>
+    <div id="poemT-line"></div>
+    <div class="thumb-bar" id="thumb-bar"></div>
+    <div class="ui-buttons">
+        <div class="left-buttons">
+            <button id="about-button">aj300542</button>
+        </div>
+        <div class="right-buttons">
+            <button id="home">返回主页</button>
+            <button id="aj300">捐赠</button>
+        </div>
+    </div>
+
+    <!-- 左边图片 -->
+    <div class="cover-left">
+        <img src="chars0a-liumin/liumin01.jpg" onmouseover="showPicPreview(this)" onmouseout="hidePicPreview()" />
+        <img src="chars0a-liumin/liumin02.jpg" onmouseover="showPicPreview(this)" onmouseout="hidePicPreview()" />
+        <img src="chars0a-liumin/liumin03.jpg" onmouseover="showPicPreview(this)" onmouseout="hidePicPreview()" />
+        <img src="chars0a-liumin/liumin04.jpg" onmouseover="showPicPreview(this)" onmouseout="hidePicPreview()" />
+        <img src="chars0a-liumin/liumin05.jpg" onmouseover="showPicPreview(this)" onmouseout="hidePicPreview()" />
+        <img src="chars0a-liumin/liumin06.jpg" onmouseover="showPicPreview(this)" onmouseout="hidePicPreview()" />
+    </div>
+
+    <!-- 右边图片 -->
+    <div class="cover-right">
+        <img src="chars0a-liumin/liumin07.jpg" onmouseover="showPicPreview(this)" onmouseout="hidePicPreview()" />
+        <img src="chars0a-liumin/liumin08.jpg" onmouseover="showPicPreview(this)" onmouseout="hidePicPreview()" />
+        <img src="chars0a-liumin/liumin09.jpg" onmouseover="showPicPreview(this)" onmouseout="hidePicPreview()" />
+        <img src="chars0a-liumin/liumin10.jpg" onmouseover="showPicPreview(this)" onmouseout="hidePicPreview()" />
+        <img src="chars0a-liumin/liumin11.jpg" onmouseover="showPicPreview(this)" onmouseout="hidePicPreview()" />
+        <img src="chars0a-liumin/liumin12.jpg" onmouseover="showPicPreview(this)" onmouseout="hidePicPreview()" />
+    </div>
+
+    <!-- 中间放大图容器 -->
+    <div class="picpreview" id="picpreviewBox">
+        <img id="picpreviewImg" src="" />
+    </div>
+    <div class="play-buttons">
+        <button id="demo-button">▶️</button>
+        <div id="speed-buttons">
+            <button data-speed="slow">慢</button>
+            <button data-speed="fast">快</button>
+        </div>
+        <button id="demo-status">0%</button>
+    </div>
+
+    <script>
+        const charsPath = "chars0a-liumin/";
+        const imgPath = "chars0a-liumin/";
+        const boxImgPath = "chars0a-liumin/";
+        const txtPath = "chars0a-liumin/txt.json";
+        const wufoPath = "chars0a-liumin/renumbered_boxes.json";
+        const originalWidth = 5364;
+        const originalHeight = 4500;
+
+    </script>
+    <script>
+        function showPicPreview(img) {
+            const previewBox = document.getElementById('picpreviewBox');
+            const previewImg = document.getElementById('picpreviewImg');
+            previewImg.src = img.src;
+            previewBox.style.display = 'block';
+        }
+
+        function hidePicPreview() {
+            document.getElementById('picpreviewBox').style.display = 'none';
+        }
+    </script>
+
+
+    <script src="js/playUI.js"></script>
+    <script src="js/letter.js"></script>
+    <script src="js/button2.js"></script>
+    <script src="js/txt.js"></script>
+    <script src="js/chars.js"></script>
+    <script src="js/controls.js"></script>
+</body>
+
+</html>

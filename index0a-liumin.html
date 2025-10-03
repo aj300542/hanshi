@@ -87,8 +87,8 @@
             cursor: pointer;
         }
 
-        /* 中间放大图容器 */
-        .picpreview {
+        .picpreview,
+        .videopreview {
             position: fixed;
             top: 50%;
             left: 50%;
@@ -103,6 +103,12 @@
         }
 
         .picpreview img {
+            width: 25vw;
+            height: auto;
+            border: 2px solid rgb(163, 163, 163);
+        }
+
+        .videopreview video {
             width: 25vw;
             height: auto;
             border: 2px solid rgb(163, 163, 163);
@@ -159,6 +165,12 @@
     <div class="picpreview" id="picpreviewBox">
         <img id="picpreviewImg" src="" />
     </div>
+    <!-- 中间视频容器 -->
+    <div class="videopreview" id="videopreviewBox">
+        <video id="videopreviewPlayer" controls></video>
+    </div>
+
+
     <div class="play-buttons">
         <button id="demo-button">▶️</button>
         <div id="speed-buttons">
@@ -179,17 +191,68 @@
 
     </script>
     <script>
+        let previewTimer = null;
+
         function showPicPreview(img) {
             const previewBox = document.getElementById('picpreviewBox');
             const previewImg = document.getElementById('picpreviewImg');
+            const videoBox = document.getElementById('videopreviewBox');
+            const videoPlayer = document.getElementById('videopreviewPlayer');
+
+            // 清除旧定时器，防止多次触发
+            if (previewTimer) {
+                clearTimeout(previewTimer);
+                previewTimer = null;
+            }
+
+            // 显示图片预览
             previewImg.src = img.src;
             previewBox.style.display = 'block';
+
+            // 清除之前的视频状态
+            videoBox.style.display = 'none';
+            videoPlayer.pause();
+            videoPlayer.src = '';
+
+            // 提取文件编号
+            const match = img.src.match(/liumin(\d+)\.jpg$/);
+            if (match) {
+                const num = match[1];
+                const videoList = ['05', '07', '09', '10', '11', '12'];
+                if (videoList.includes(num)) {
+                    // 延迟显示视频（2秒）
+                    previewTimer = setTimeout(() => {
+                        previewBox.style.display = 'none';
+                        const videoPath = `chars0a-liumin/${num}_h264.mp4`; // 使用转码后的视频
+                        videoPlayer.src = videoPath;
+                        videoPlayer.muted = true; // ✅ 静音以允许自动播放
+                        videoPlayer.load();
+                        videoBox.style.display = 'block';
+                        videoPlayer.play();
+                    }, 500);
+                }
+            }
         }
 
+
         function hidePicPreview() {
-            document.getElementById('picpreviewBox').style.display = 'none';
+            const previewBox = document.getElementById('picpreviewBox');
+            const videoBox = document.getElementById('videopreviewBox');
+            const videoPlayer = document.getElementById('videopreviewPlayer');
+
+            // 清除定时器，防止延迟播放
+            if (previewTimer) {
+                clearTimeout(previewTimer);
+                previewTimer = null;
+            }
+
+            previewBox.style.display = 'none';
+            videoBox.style.display = 'none';
+            videoPlayer.pause();
+            videoPlayer.src = '';
         }
     </script>
+
 
 
     <script src="js/playUI.js"></script>

@@ -1,6 +1,12 @@
+
+// ====== 状态与 DOM 引用 ======
 let txtDataGlobal = [];
 let boxElements = []; // 存储所有 box DOM 元素及坐标信息
 
+const hoverDelay = 250; // 停留超过此时间才显示（ms）
+const hoverTimers = new WeakMap(); // 每个 box 的定时器
+
+// ====== 加载数据并初始化 ======
 Promise.all([
     fetch(txtPath).then(res => res.json()),
     fetch(wufoPath).then(res => res.json())
@@ -31,7 +37,7 @@ Promise.all([
 
             preview2.style.display = "block";
 
-            // ✅ 统一定位：以 overlay-box 中心为基准
+            // 统一定位：以 overlay-box 中心为基准
             const box = document.querySelector(`.overlay-box[data-filename="${filename}"]`);
             if (box) {
                 const boxRect = box.getBoundingClientRect();
@@ -43,21 +49,21 @@ Promise.all([
                 const previewHeight = preview2.offsetHeight;
                 const pageWidth = window.innerWidth;
 
-                // ✅ 水平定位逻辑
+                // 水平定位逻辑
                 let left = centerX + offset;
                 if (left + previewWidth > pageWidth) {
                     left = centerX - previewWidth - offset;
                 }
                 left = Math.max(0, Math.min(left, pageWidth - previewWidth));
 
-                // ✅ 垂直定位固定为距离底部 18vh
+                // 垂直定位固定为距离底部 18vh
                 const bottomOffset = 14; // 单位 vh
                 const top = window.innerHeight - previewHeight - (bottomOffset * window.innerHeight / 100);
 
                 preview2.style.left = `${left}px`;
                 preview2.style.top = `${top}px`;
 
-                // ✅ 获取 DOM 元素
+                // 获取 DOM 元素
                 const poemDisplay = document.getElementById("poem-line");
                 const poemTDisplay = document.getElementById("poemT-line");
 
@@ -84,9 +90,9 @@ Promise.all([
 
             }
         }
-        // ✅ 显式挂载到 window，确保 index2.html 能访问
+        // 显式挂载到 window，确保 index2.html 能访问
         window.updatePreview = updatePreview;
-        // ✅ 添加事件监听器，供 chars.js 调用
+        // 添加事件监听器，供 chars.js 调用
         window.addEventListener("requestBoxPreview", (e) => {
             const { filename } = e.detail;
             updatePreview(filename);
@@ -99,6 +105,8 @@ Promise.all([
             const scaleX = renderedWidth / originalWidth;
             const scaleY = renderedHeight / originalHeight;
 
+            // 遍历 boxes 数据（boxes 来自 Promise 中的第二项）
+            // 注意：boxes 变量在外层 then 的作用域中可访问
             boxes.forEach(box => {
                 const boxDiv = document.createElement("div");
                 boxDiv.className = "overlay-box";
@@ -121,72 +129,70 @@ Promise.all([
                 boxDiv.style.display = "block";
                 boxDiv.textContent = box.index;
 
-                wrapper.appendChild(boxDiv); // ✅ 挂在 image-wrapper 内部
+                wrapper.appendChild(boxDiv); // 挂在 image-wrapper 内部
 
-
-                boxDiv.addEventListener("mouseenter", () => {
+                // 最小修改：鼠标悬停延时逻辑，避免快速略过导致频繁闪烁
+                boxDiv.addEventListener("mouseenter", (e) => {
                     const filename = boxDiv.dataset.filename;
-                    if (filename) {
+                    if (!filename) return;
+
+                    const prevTimer = hoverTimers.get(boxDiv);
+                    if (prevTimer) clearTimeout(prevTimer);
+
+                    const t = setTimeout(() => {
                         updatePreview(filename);
 
-                        // ✅ 触发显示诗句和注释
+                        // 触发显示诗句和注释
                         window.dispatchEvent(new CustomEvent("hoverOnBox", {
                             detail: { filename }
                         }));
 
-                        // ✅ 滚动 thumb-bar
+                        // 滚动 thumb-bar
                         window.dispatchEvent(new CustomEvent("scrollToThumb", {
                             detail: { filename }
                         }));
 
-                        // ✅ 滚动 image-wrapper 居中目标 box
+                        // 滚动 image-wrapper 居中目标 box
                         window.dispatchEvent(new CustomEvent("scrollToBox", {
                             detail: { filename }
                         }));
 
-                    } else {
-                        preview2.innerHTML = "<div class='error'>图像未找到</div>";
-                        preview2.style.display = "block";
-                    }
-                    if (filename) {
-                        window.dispatchEvent(new CustomEvent("scrollToThumb", {
-                            detail: { filename }
-                        }));
-                    }
+                        hoverTimers.delete(boxDiv);
+                    }, hoverDelay);
+                    hoverTimers.set(boxDiv, t);
                 });
 
                 boxDiv.addEventListener("mousemove", (e) => {
-                    updatePreview(boxDiv.dataset.filename, e.clientX, e.clientY);
+                    const filename = boxDiv.dataset.filename;
+                    if (!filename) return;
+
+                    // 仅当 preview 已显示时根据鼠标位置更新定位，避免在未显示时频繁触发
+                    if (preview2 && preview2.style.display === "block") {
+                        updatePreview(filename, e.clientX, e.clientY);
+                    } else {
+                        // 若已有定时器，重置计时以提高容错（用户在 box 内短暂停留时仍想触发）
+                        const prevTimer = hoverTimers.get(boxDiv);
+                        if (prevTimer) {
+                            clearTimeout(prevTimer);
+                            const t = setTimeout(() => {
+                                updatePreview(filename);
+                                window.dispatchEvent(new CustomEvent("hoverOnBox", { detail: { filename } }));
+                                window.dispatchEvent(new CustomEvent("scrollToThumb", { detail: { filename } }));
+                                window.dispatchEvent(new CustomEvent("scrollToBox", { detail: { filename } }));
+                                hoverTimers.delete(boxDiv);
+                            }, hoverDelay);
+                            hoverTimers.set(boxDiv, t);
+                        }
+                    }
                 });
 
-                // ✅ 触摸屏支持：在 image-wrapper 上触摸时检测 box
-                wrapper.addEventListener("touchstart", handleTouchMove, { passive: false });
-                wrapper.addEventListener("touchmove", handleTouchMove, { passive: false });
-
-                function handleTouchMove(e) {
-                    const touch = e.touches[0];
-                    const rect = bgImg.getBoundingClientRect();
-                    const x = touch.clientX - rect.left;
-                    const y = touch.clientY - rect.top;
-
-                    let found = false;
-
-                    boxElements.forEach(({ element, x: bx, y: by, width, height }) => {
-                        const inside = x >= bx && x <= bx + width && y >= by && y <= by + height;
-                        element.style.display = inside ? "block" : "none";
-                        if (inside) {
-                            const filename = element.dataset.filename;
-                            updatePreview(filename, touch.clientX, touch.clientY);
-                            found = true;
-                        }
-                    });
-
-                    if (!found) {
-                        preview2.style.display = "none";
-                        preview2.innerHTML = "";
-                    }
-                }
+                // 触摸屏支持：在 image-wrapper 上触摸时检测 box
+                // 触摸事件绑定放在外层（renderBoxes 之后），这里保留 mouse leave
                 boxDiv.addEventListener("mouseleave", () => {
+                    const t = hoverTimers.get(boxDiv);
+                    if (t) clearTimeout(t);
+                    hoverTimers.delete(boxDiv);
+
                     preview2.style.display = "none";
                     preview2.innerHTML = "";
                 });
@@ -235,8 +241,7 @@ Promise.all([
                     };
                 });
 
-                wrapper.appendChild(boxDiv);
-
+                // 将 box 信息加入 boxElements，供触摸/移动检测使用
                 boxElements.push({
                     element: boxDiv,
                     x: left,
@@ -246,7 +251,7 @@ Promise.all([
                 });
             });
 
-            // ✅ 鼠标在 image-wrapper 上移动时自动检测 box
+            // 鼠标在 image-wrapper 上移动时自动检测 box
             wrapper.addEventListener("mousemove", (e) => {
                 const rect = bgImg.getBoundingClientRect();
                 const x = e.clientX - rect.left;
@@ -256,10 +261,18 @@ Promise.all([
 
                 boxElements.forEach(({ element, x: bx, y: by, width, height }) => {
                     const inside = x >= bx && x <= bx + width && y >= by && y <= by + height;
-                    element.style.display = inside ? "block" : "none";
+                    // 仅在 display 状态变化时更新，减少重绘
+                    const desired = inside ? "block" : "none";
+                    if (element.style.display !== desired) {
+                        element.style.display = desired;
+                    }
                     if (inside) {
                         const filename = element.dataset.filename;
-                        updatePreview(filename, e.clientX, e.clientY);
+                        // 仅当 preview 已显示或悬停计时器未存在时才触发定位/显示行为
+                        const t = hoverTimers.get(element);
+                        if (!t && preview2 && preview2.style.display === "block") {
+                            updatePreview(filename, e.clientX, e.clientY);
+                        }
                         found = true;
                     }
                 });
@@ -271,7 +284,7 @@ Promise.all([
             });
 
 
-            // ✅ 响应 showBoxByFilename 事件
+            // 响应 showBoxByFilename 事件
             window.addEventListener("showBoxByFilename", (e) => {
                 const filename = e.detail;
                 document.querySelectorAll(`.overlay-box[data-filename="${filename}"]`)
@@ -284,7 +297,7 @@ Promise.all([
 
             });
 
-            // ✅ 响应 hideBoxByFilename 事件
+            // 响应 hideBoxByFilename 事件
             window.addEventListener("hideBoxByFilename", (e) => {
                 const filename = e.detail;
                 document.querySelectorAll(`.overlay-box[data-filename="${filename}"]`)
@@ -328,8 +341,8 @@ Promise.all([
                     const wrapperCenterX = wrapper.clientWidth / 2;
                     const scrollLeft = boxCenterX - wrapperCenterX;
 
-                    // ✅ 使用 wrapper 宽度动态计算阈值（例如 10%）
-                    const threshold = wrapper.clientWidth * 0.08; // 10% 宽度
+                    // 使用 wrapper 宽度动态计算阈值（例如 8%）
+                    const threshold = wrapper.clientWidth * 0.08; // 8% 宽度
                     const deltaX = lastScrollX === null ? Infinity : Math.abs(boxCenterX - lastScrollX);
 
                     if (deltaX > threshold) {
@@ -340,17 +353,17 @@ Promise.all([
                         lastScrollX = boxCenterX;
                     }
 
-                    // ✅ 高亮目标 box
+                    // 高亮目标 box
                     targetBox.classList.add("highlight");
-                    setTimeout(() => targetBox.classList.remove("highlight"), 1000);
+                    setTimeout(() => targetBox.classList.remove("highlight"), 2000);
                 }
             });
 
-            // ✅ 所有 box 渲染完毕，通知拖拽系统初始化
+            // 所有 box 渲染完毕，通知拖拽系统初始化
             window.dispatchEvent(new Event("dragReady"));
 
         }
-        // ✅ 添加 resize 监听器（放在 renderBoxes 定义之后）
+        // 添加 resize 监听器（放在 renderBoxes 定义之后）
         window.addEventListener("resize", () => {
             boxElements.forEach(({ element }) => element.remove());
             boxElements = [];

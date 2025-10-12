@@ -315,7 +315,7 @@
 
             const list = document.getElementById("LongScrollList");
             const allItems = Array.from(list.querySelectorAll("ul li"));
-            const maxPerColumn = 15;
+            const maxPerColumn = 10;
 
             if (list.dataset.processed !== "true") {
                 const columns = [];
@@ -412,6 +412,17 @@
     <script src="js/txtlong.js"></script>
     <script src="js/chars.js"></script>
     <script src="js/control.js"></script>
+    <script type="importmap">
+    {
+    "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.150.1/build/three.module.js"
+    }
+    }
+    </script>
+
+    <script type="module" src="./js/modelLoader.js"></script>
+
+
 </body>
 
 </html>

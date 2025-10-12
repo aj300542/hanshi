@@ -1,0 +1,22 @@
+# Blender 4.5.3 LTS MTL File: 'text_T1_T2.blend'
+# www.blender.org
+
+newmtl Old_gold
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+# 漫反射 / albedo
+map_Kd textures/Metal048C_2K-JPG_Color.jpg
+# 法线贴图（MTL 常用鍵名：map_Bump 或 bump）
+map_Bump textures/Metal048C_2K-JPG_NormalGL.jpg
+# 下面两行仅作标注，MTLLoader 不会自动把它们映射为 metalness/roughness
+# 请在 JS 中把这些文件显式映射到 MeshStandardMaterial
+# metalness (informational)
+# map_metalness textures/Metal048C_2K-JPG_Metalness.jpg
+# roughness (informational)
+# map_roughness textures/Metal048C_2K-JPG_Roughness.jpg

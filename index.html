@@ -365,10 +365,31 @@
             document.getElementById("longScrollList").style.display = "none";
         }
         function toggleShortScrollList() {
+            // 隐藏长列表
             document.getElementById("LongScrollList").style.display = "none";
+
             const list = document.getElementById("ShortScrollList");
-            list.style.display = list.style.display === "block" ? "none" : "block";
+            const allItems = Array.from(list.querySelectorAll("ul li"));
+            const maxPerColumn = 10;
+
+            if (list.dataset.processed !== "true") {
+                const columns = [];
+                for (let i = 0; i < allItems.length; i += maxPerColumn) {
+                    const column = document.createElement("div");
+                    column.className = "scroll-column";
+                    const ul = document.createElement("ul");
+                    allItems.slice(i, i + maxPerColumn).forEach(item => ul.appendChild(item));
+                    column.appendChild(ul);
+                    columns.push(column);
+                }
+                list.innerHTML = ""; // 清空原始内容
+                columns.forEach(col => list.appendChild(col));
+                list.dataset.processed = "true"; // 防止重复处理
+            }
+
+            list.style.display = list.style.display === "flex" ? "none" : "flex";
         }
+
         function handleShortScrollSelect(id) {
             const urlMap = {
                 index2: "index2.html",

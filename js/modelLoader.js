@@ -58,6 +58,43 @@ function computeCameraAzimuth(center) {
   const dz = camPos.z - center.z;
   return Math.atan2(dz, dx); // 返回 [-PI, PI]
 }
+// Module-top-level helper — use everywhere
+function repositionCameraToFit(wrapper, options = {}) {
+  // options: { distanceFactorLandscape, distanceFactorPortrait, verticalOffsetFactor, ensureRAF }
+  if (!wrapper || !viewerCamera) return null;
+  try {
+    const landscapeFactor = options.distanceFactorLandscape ?? 0.6;
+    const portraitFactor = options.distanceFactorPortrait ?? 1.2;
+    const verticalOffsetFactor = options.verticalOffsetFactor ?? 0.15;
+
+    const box = new THREE.Box3().setFromObject(wrapper);
+    const size = box.getSize(new THREE.Vector3());
+    const center = box.getCenter(new THREE.Vector3());
+    const maxDim = Math.max(size.x, size.y, size.z, 0.0001);
+    const fov = (viewerCamera.fov * Math.PI) / 180;
+    const isLandscape = window.innerWidth > window.innerHeight;
+    const distanceFactor = isLandscape ? landscapeFactor : portraitFactor;
+    const distance = (maxDim * distanceFactor) / Math.tan(fov / 2);
+
+    // place camera (front view)
+    viewerCamera.position.set(center.x, center.y + maxDim * verticalOffsetFactor, center.z + distance);
+    viewerCamera.near = Math.max(maxDim / 100, 0.01);
+    viewerCamera.far = Math.max(1000, maxDim * 200);
+    viewerCamera.updateProjectionMatrix();
+    viewerCamera.lookAt(center);
+
+    if (viewerControls) {
+      try { viewerControls.target.copy(center); viewerControls.update(); } catch (e) {}
+    }
+
+    requestRender();
+    // return reference values for callers (e.g., startAutoOrbit can reuse radius)
+    return { center: center.clone(), distance, maxDim, fov, isLandscape };
+  } catch (e) {
+    console.warn('repositionCameraToFit failed', e);
+    return null;
+  }
+}
 
 // 修改 startAutoOrbit：在启动时将 _autoOrbitStart 校正为当前相机角度
 function startAutoOrbit(options = {}) {
@@ -67,23 +104,57 @@ function startAutoOrbit(options = {}) {
   _autoOrbitPitchAmp = options.pitchAmp ?? _autoOrbitPitchAmp;
   _autoOrbitVerticalAmp = options.verticalAmp ?? _autoOrbitVerticalAmp;
 
-  // 计算环绕起始角，使 baseAngle(t=0) 与当前摄像机方位对齐
+  // compute initialAngle so orbit is aligned with current camera orientation
   let initialAngle = 0;
   if (viewerCurrentWrapper && viewerCamera) {
-    const box = new THREE.Box3().setFromObject(viewerCurrentWrapper);
-    const center = box.getCenter(new THREE.Vector3());
-    initialAngle = computeCameraAzimuth(center);
+    try {
+      const box = new THREE.Box3().setFromObject(viewerCurrentWrapper);
+      const center = box.getCenter(new THREE.Vector3());
+      initialAngle = computeCameraAzimuth(center);
+
+      // prefer to preserve current horizontal camera distance to avoid first-frame jump
+      const camPos = viewerCamera.position;
+      const dx = camPos.x - center.x;
+      const dz = camPos.z - center.z;
+      const horizDist = Math.hypot(dx, dz);
+
+      _autoOrbitCenter.copy(center);
+
+      if (isFinite(horizDist) && horizDist > 1e-6) {
+        _autoOrbitRadius = horizDist;
+      } else {
+        // fallback: compute radius using same logic as repositionCameraToFit
+        const size = box.getSize(new THREE.Vector3());
+        const maxDim = Math.max(size.x, size.y, size.z, 0.0001);
+        const fov = (viewerCamera.fov * Math.PI) / 180;
+        const isLandscape = window.innerWidth > window.innerHeight;
+        const distanceFactor = isLandscape ? 0.6 : 1.2;
+        _autoOrbitRadius = (maxDim * distanceFactor) / Math.tan(fov / 2);
+      }
+    } catch (e) {
+      // robust fallback if any computation fails
+      _autoOrbitCenter.set(0, 0, 0);
+      const cam = viewerCamera.position;
+      _autoOrbitRadius = Math.hypot(cam.x - _autoOrbitCenter.x, cam.z - _autoOrbitCenter.z) || 2.0;
+    }
   } else if (viewerCamera) {
-    // 相对于世界原点
-    initialAngle = Math.atan2(viewerCamera.position.z, viewerCamera.position.x);
+    // no wrapper: orbit around world origin, preserve current cam distance
+    _autoOrbitCenter.set(0, 0, 0);
+    const cam = viewerCamera.position;
+    initialAngle = Math.atan2(cam.z - _autoOrbitCenter.z, cam.x - _autoOrbitCenter.x);
+    _autoOrbitRadius = Math.hypot(cam.x - _autoOrbitCenter.x, cam.z - _autoOrbitCenter.z) || 2.0;
+  } else {
+    // nothing to orbit
+    return;
   }
 
-  // 将时间基准向后推，使 baseAngle = initialAngle at t = 0
+  // align time base so baseAngle(0) == initialAngle
   _autoOrbitStart = (performance.now() / 1000) - (initialAngle / (_autoOrbitSpeed || 1e-6));
   _autoOrbitRunning = true;
   if (!_autoOrbitReq) _autoOrbitReq = requestAnimationFrame(_autoOrbitStep);
   requestRender();
 }
+
 
 
 function stopAutoOrbit() {
@@ -240,9 +311,15 @@ async function createViewerIfNeeded() {
       viewerContainer.dataset.maximized = '1';
       maxBtn.title = 'Restore';
       stopAutoOrbit();
-      setTimeout(() => { startAutoOrbit({ speed: 0.35, yawAmp: 0.07, pitchAmp: 0.04, verticalAmp: 0.02 }); }, 50);
       updateRendererForSize();
-      requestRender();
+      // wait a frame so DOM layout updates and renderer size takes effect
+      requestAnimationFrame(() => {
+        try { if (viewerCurrentWrapper) repositionCameraToFit(viewerCurrentWrapper); } catch(e) {}
+        // restart orbit after reposition
+        stopAutoOrbit();
+        setTimeout(() => startAutoOrbit({ speed:0.35, yawAmp:0.07, pitchAmp:0.04, verticalAmp:0.02 }), 50);
+        requestRender();
+      });
     }
 
     function _restoreFromMaximized() {
@@ -267,7 +344,10 @@ async function createViewerIfNeeded() {
       maxBtn.title = 'Maximize';
       _prevViewerStylesForMax = null;
       updateRendererForSize();
-      requestRender();
+      requestAnimationFrame(() => {
+        try { if (viewerCurrentWrapper) repositionCameraToFit(viewerCurrentWrapper); } catch(e) {}
+        requestRender();
+      });
     }
 
     maxBtn.addEventListener('click', (ev) => {
@@ -350,6 +430,7 @@ async function createViewerIfNeeded() {
   dir.position.set(10, 20, 10);
   viewerScene.add(dir);
 
+  // ---- viewerCamera must be created before calling repositionCameraToFit ----
   viewerCamera = new THREE.PerspectiveCamera(50, viewerContainer.clientWidth / viewerContainer.clientHeight, 0.01, 1000);
   viewerCamera.position.set(0, 0.8, 2);
 
@@ -360,6 +441,13 @@ async function createViewerIfNeeded() {
     // only render on control change to avoid constant expensive renders
     viewerControls.addEventListener('change', () => requestRender());
   } catch (e) { viewerControls = null; }
+
+  // safe initial camera fit after camera and controls exist
+  if (viewerCurrentWrapper) {
+    requestAnimationFrame(() => {
+      try { repositionCameraToFit(viewerCurrentWrapper); } catch (e) {}
+    });
+  }
 
   if (viewerCanvas) {
     viewerCanvas.style.touchAction = 'auto';
@@ -644,7 +732,9 @@ async function showObjectForFilename(filename) {
         chosen = await resolveFirstExistingObjPath(maybeChar);
       }
     }
-  } catch (e) { console.warn('showObjectForFilename path resolution failed', e); }
+  } catch (e) {
+    console.warn('showObjectForFilename path resolution failed', e);
+  }
 
   const label = document.getElementById('obj-viewer-label');
   if (label) label.textContent = filename;
@@ -658,12 +748,14 @@ async function showObjectForFilename(filename) {
   try {
     const obj = await loadObj(chosen);
 
+    // remove previous
     if (viewerCurrentWrapper) {
-      viewerScene.remove(viewerCurrentWrapper);
-      disposeWrapper(viewerCurrentWrapper);
+      try { viewerScene.remove(viewerCurrentWrapper); } catch (e) {}
+      try { disposeWrapper(viewerCurrentWrapper); } catch (e) {}
       viewerCurrentWrapper = null;
     }
 
+    // add new wrapper
     const wrapper = new THREE.Object3D();
     wrapper.add(obj);
     wrapper.position.set(0, 0, 0);
@@ -671,37 +763,47 @@ async function showObjectForFilename(filename) {
     viewerScene.add(wrapper);
     viewerCurrentWrapper = wrapper;
 
-    const box = new THREE.Box3().setFromObject(wrapper);
-    const size = box.getSize(new THREE.Vector3());
-    const center = box.getCenter(new THREE.Vector3());
-    const maxDim = Math.max(size.x, size.y, size.z, 0.0001);
-    const fov = (viewerCamera.fov * Math.PI) / 180;
-    const distance = (maxDim * 0.6) / Math.tan(fov / 2);
-
-    // default camera placement (front view)
-    viewerCamera.position.copy(new THREE.Vector3(center.x, center.y + maxDim * 0.15, center.z + distance));
-    viewerCamera.near = Math.max(maxDim / 100, 0.01);
-    viewerCamera.far = Math.max(1000, maxDim * 200);
-    viewerCamera.updateProjectionMatrix();
-    viewerCamera.lookAt(center);
-
-    if (viewerControls) {
-      try {
-        viewerControls.target.copy(center);
-        viewerControls.update();
-      } catch (e) {}
-    }
-
+    // ensure container is visible and renderer/camera are sized
     if (viewerContainer) viewerContainer.style.display = 'block';
+    try { updateRendererForSize(); } catch (e) { console.warn('updateRendererForSize failed', e); }
 
-    try { updateRendererForSize(); } catch (e) { console.warn('viewer sync/render failed', e); }
+    // wait a frame for layout/renderer resize to take effect, then position camera and start interactions
+    requestAnimationFrame(() => {
+      try {
+        repositionCameraToFit(wrapper);                       // centralized positioning (handles landscape/portrait)
+      } catch (e) {
+        // fallback: compute a conservative camera placement if reposition fails
+        try {
+          const box = new THREE.Box3().setFromObject(wrapper);
+          const size = box.getSize(new THREE.Vector3());
+          const center = box.getCenter(new THREE.Vector3());
+          const maxDim = Math.max(size.x, size.y, size.z, 0.0001);
+          const fov = (viewerCamera && viewerCamera.fov ? (viewerCamera.fov * Math.PI) / 180 : Math.PI / 3);
+          const isLandscape = window.innerWidth > window.innerHeight;
+          const distanceFactor = isLandscape ? 0.6 : 1.2; // <-- 统一改为 0.3（竖屏）
+          const distance = (maxDim * distanceFactor) / Math.tan(fov / 2);
+          if (viewerCamera) {
+            viewerCamera.position.copy(new THREE.Vector3(center.x, center.y + maxDim * 0.15, center.z + distance));
+            viewerCamera.near = Math.max(maxDim / 100, 0.01);
+            viewerCamera.far = Math.max(1000, maxDim * 200);
+            viewerCamera.updateProjectionMatrix();
+            viewerCamera.lookAt(center);
+            if (viewerControls) { try { viewerControls.target.copy(center); viewerControls.update(); } catch (e) {} }
+          }
+        } catch (err) {
+          console.warn('fallback camera placement failed', err);
+        }
+      }
 
-    // bind interaction & start auto orbit after a short delay to keep initial front view
-    _bindAutoOrbitInteraction(viewerContainer);
-    // start orbit after a short pause so user sees front first
-    setTimeout(() => { startAutoOrbit({ speed: 0.35, yawAmp: 0.07, pitchAmp: 0.04, verticalAmp: 0.02 }); }, 2000);
+      try { _bindAutoOrbitInteraction(viewerContainer); } catch (e) { console.warn('_bindAutoOrbitInteraction failed', e); }
 
-    requestRender();
+      setTimeout(() => {
+        try { startAutoOrbit({ speed: 0.35, yawAmp: 0.07, pitchAmp: 0.04, verticalAmp: 0.02 }); } catch (e) {}
+      }, 1000);
+
+      requestRender();
+    });
+
   } catch (e) {
     console.error('Failed to load obj for viewer', e);
     if (viewerContainer) viewerContainer.style.display = 'none';
@@ -713,7 +815,6 @@ function hideViewer() {
   if (viewerContainer) viewerContainer.style.display = 'none';
   requestRender();
 }
-
 // -------------------- hover debounce to avoid rapid switching --------------------
 let _hoverTimer = null;
 const _hoverDelay = 500;

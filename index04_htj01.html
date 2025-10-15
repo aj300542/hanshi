@@ -2,7 +2,7 @@
 <html lang="zh">
 
 <head>
-    <meta chars04htjt="UTF-8" />
+    <meta chars04htj01t="UTF-8" />
     <title>宋黄庭坚尺牍</title>
     <link rel="stylesheet" href="js/styles.css">
     <link rel="stylesheet" href="js/pic.css">
@@ -77,7 +77,7 @@
 
     <div class="image-wrapper-container">
         <div class="image-wrapper" id="image-wrapper">
-            <img src="htj-1music.jpg" alt="背景图" />
+            <img src="htj-2old.jpg" alt="背景图" />
         </div>
     </div>
     <div id="box-preview"></div>
@@ -93,26 +93,26 @@
             <button id="about-button">aj300542</button>
         </div>
         <div class="right-buttons">
-            <button id="index04_htj01">黄庭坚致齐君尺牍第二页</button>
-            <button id="home">返回主页</button>
+            <button id="index04">返回主帖</button>
             <button id="aj300">捐赠</button>
         </div>
     </div>
     <div class="cover-small">
-        <img src="chars04htj/char_021.jpg" style="width: 8vw;" />
+        <img src="chars04htj01/char_027.jpg" style="width: 8vw;" />
         <img src="portrait/htj1.jpg" style="width: 8vw;" alt="点击下载" />
         </a>
 
         <div class="hover-text">清宫殿藏画本<br>黄庭坚像</div>
-        <img src="chars04htj/char_022.jpg" style="width: 8vw;" />
+        <img src="chars04htj01/char_078.jpg" style="width: 8vw;" />
+        <img src="chars04htj01/char_051.jpg" style="width: 8vw;" />
     </div>
     <div class="cover-smallRu">
-        <img src="chars04htj/char_046.jpg" style="width: 8vw;" />
+        <img src="chars04htj01/char_063.jpg" style="width: 8vw;" />
         <img src="portrait/Huang_Tingjian.jpg" style="width: 8vw;" alt="点击下载" />
         </a>
 
         <div class="hover-text">《晩笑堂竹庄画传》<br>黄庭坚像</div>
-        <img src="chars04htj/char_020.jpg" style="width: 8vw;" />
+        <img src="chars04htj01/char_064.jpg" style="width: 8vw;" />
     </div>
     <div class="play-buttons">
         <button id="demo-button">▶️</button>
@@ -124,23 +124,19 @@
     </div>
 
     <script>
-        const charsPath = "chars04htj/";
-        const imgPath = "chars04htj/";
-        const boxImgPath = "chars04htj/";
-        const txtPath = "chars04htj/txt.json";
-        const wufoPath = "chars04htj/renumbered_boxes.json";
-        const originalWidth = 1635;
-        const originalHeight = 1084;
+        const charsPath = "chars04htj01/";
+        const imgPath = "chars04htj01/";
+        const boxImgPath = "chars04htj01/";
+        const txtPath = "chars04htj01/txt.json";
+        const wufoPath = "chars04htj01/renumbered_boxes.json";
+        const originalWidth = 2458;
+        const originalHeight = 1464;
 
     </script>
     <script>
-        for (let i = 1; i <= 9; i++) {
-            const id = `index04_htj0${i}`;
-            document.getElementById(id)?.addEventListener("click", () => {
-                window.location.href = `${id}.html`;
-            });
-        }
-
+        document.getElementById("index04").addEventListener("click", () => {
+            window.location.href = "index04_htj.html";
+        });
     </script>
 
 

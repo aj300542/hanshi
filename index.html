@@ -182,6 +182,7 @@
             <button id="ShortScrollBtn" onclick="toggleShortScrollList()">短幅作品</button>
             <div id="ShortScrollList" class="scroll-menu" style="left: 0;">
                 <ul>
+                    <li onclick="handleShortScrollSelect('index04')">🧔‍♂️黄庭坚尺牍</li>
                     <li onclick="handleShortScrollSelect('index0a')">🧔‍♂️周臣流民图</li>
                     <li onclick="handleShortScrollSelect('indexY')">📁宋高宗赐岳飞手敕</li>
                     <li onclick="handleShortScrollSelect('indexW')">🐎赵孟頫雪晴云散帖</li>
@@ -200,6 +201,7 @@
                     <li onclick="handleShortScrollSelect('index5')">🍊平安何如奉橘帖</li>
                     <li onclick="handleShortScrollSelect('index4')">🌐王羲之远宦帖</li>
                     <li onclick="handleShortScrollSelect('index3')">🤝双钩填墨行穰帖</li>
+
                 </ul>
             </div>
             <button id="index2">题苏轼寒食帖跋</button>
@@ -365,10 +367,31 @@
             document.getElementById("longScrollList").style.display = "none";
         }
         function toggleShortScrollList() {
+            // 隐藏长列表
             document.getElementById("LongScrollList").style.display = "none";
+
             const list = document.getElementById("ShortScrollList");
-            list.style.display = list.style.display === "block" ? "none" : "block";
+            const allItems = Array.from(list.querySelectorAll("ul li"));
+            const maxPerColumn = 10;
+
+            if (list.dataset.processed !== "true") {
+                const columns = [];
+                for (let i = 0; i < allItems.length; i += maxPerColumn) {
+                    const column = document.createElement("div");
+                    column.className = "scroll-column";
+                    const ul = document.createElement("ul");
+                    allItems.slice(i, i + maxPerColumn).forEach(item => ul.appendChild(item));
+                    column.appendChild(ul);
+                    columns.push(column);
+                }
+                list.innerHTML = ""; // 清空原始内容
+                columns.forEach(col => list.appendChild(col));
+                list.dataset.processed = "true"; // 防止重复处理
+            }
+
+            list.style.display = list.style.display === "flex" ? "none" : "flex";
         }
+
         function handleShortScrollSelect(id) {
             const urlMap = {
                 index2: "index2.html",
@@ -390,6 +413,7 @@
                 indexW: "indexW.html",
                 indexY: "indexY.html",
                 index0a: "index0a-liumin.html",
+                index04: "index04_htj.html",
             };
 
             if (urlMap[id]) {
@@ -402,6 +426,9 @@
 
         document.getElementById("ccnote").addEventListener("click", () => {
             window.open("https://aj300542.github.io/cc", "_blank");
+        });
+        document.getElementById("aj300").addEventListener("click", () => {
+            window.open("https://aj300542.github.io/download", "_blank");
         });
 
     </script>

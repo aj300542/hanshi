@@ -14,7 +14,6 @@ const PBR_BASE = 'Metal048C_2K-JPG';
 const PBR_FOLDER = './textures/';
 const ROOT_MTL = './yang.mtl'; // set to '' to disable
 const MTL_TEXTURE_PATH = '/textures/';
-const CHARS_DIR = './chars/';
 
 let rootMaterials = null;
 const modelCache = {};
@@ -64,7 +63,7 @@ function repositionCameraToFit(wrapper, options = {}) {
   if (!wrapper || !viewerCamera) return null;
   try {
     const landscapeFactor = options.distanceFactorLandscape ?? 0.6;
-    const portraitFactor = options.distanceFactorPortrait ?? 1.2;
+    const portraitFactor = options.distanceFactorPortrait ?? 1.1;
     const verticalOffsetFactor = options.verticalOffsetFactor ?? 0.15;
 
     const box = new THREE.Box3().setFromObject(wrapper);
@@ -128,7 +127,7 @@ function startAutoOrbit(options = {}) {
         const maxDim = Math.max(size.x, size.y, size.z, 0.0001);
         const fov = (viewerCamera.fov * Math.PI) / 180;
         const isLandscape = window.innerWidth > window.innerHeight;
-        const distanceFactor = isLandscape ? 0.6 : 1.2;
+        const distanceFactor = isLandscape ? 1.2 : 1.2;
         _autoOrbitRadius = (maxDim * distanceFactor) / Math.tan(fov / 2);
       }
     } catch (e) {
@@ -317,7 +316,7 @@ async function createViewerIfNeeded() {
         try { if (viewerCurrentWrapper) repositionCameraToFit(viewerCurrentWrapper); } catch(e) {}
         // restart orbit after reposition
         stopAutoOrbit();
-        setTimeout(() => startAutoOrbit({ speed:0.35, yawAmp:0.07, pitchAmp:0.04, verticalAmp:0.02 }), 50);
+        setTimeout(() => startAutoOrbit({ speed:0.35, yawAmp:0.07, pitchAmp:0.04, verticalAmp:0.02 }), 500);
         requestRender();
       });
     }
@@ -780,7 +779,7 @@ async function showObjectForFilename(filename) {
           const maxDim = Math.max(size.x, size.y, size.z, 0.0001);
           const fov = (viewerCamera && viewerCamera.fov ? (viewerCamera.fov * Math.PI) / 180 : Math.PI / 3);
           const isLandscape = window.innerWidth > window.innerHeight;
-          const distanceFactor = isLandscape ? 0.6 : 1.2; // <-- 统一改为 0.3（竖屏）
+          const distanceFactor = isLandscape ? 0.6 : 1.1; // <-- 统一改为 0.3（竖屏）
           const distance = (maxDim * distanceFactor) / Math.tan(fov / 2);
           if (viewerCamera) {
             viewerCamera.position.copy(new THREE.Vector3(center.x, center.y + maxDim * 0.15, center.z + distance));
@@ -809,7 +808,6 @@ async function showObjectForFilename(filename) {
     if (viewerContainer) viewerContainer.style.display = 'none';
   }
 }
-
 function hideViewer() {
   try { stopAutoOrbit(); } catch (e) {}
   if (viewerContainer) viewerContainer.style.display = 'none';

@@ -3,6 +3,22 @@
 let txtDataGlobal = [];
 let boxElements = []; // 存储所有 box DOM 元素及坐标信息
 
+// zoom state
+let currentScale = 1;
+const minScale = 0.2;
+const maxScale = 5;
+const scaleStep = 0.1;
+
+// pan state
+let isDragging = false;
+let dragStartX = 0;
+let dragStartY = 0;
+let startScrollLeft = 0;
+let startScrollTop = 0;
+
+// utility: clamp
+const clamp = (v, a, b) => Math.min(Math.max(v, a), b);
+
 const hoverDelay = 250; // 停留超过此时间才显示（ms）
 const hoverTimers = new WeakMap(); // 每个 box 的定时器
 
@@ -121,10 +137,10 @@ Promise.all([
                 const height = (box.y2 - box.y1) * scaleY;
 
                 boxDiv.style.position = "absolute";
-                boxDiv.style.left = `${left}px`;
-                boxDiv.style.top = `${top}px`;
-                boxDiv.style.width = `${width}px`;
-                boxDiv.style.height = `${height}px`;
+                boxDiv.style.left = `${left * currentScale}px`;
+                boxDiv.style.top = `${top * currentScale}px`;
+                boxDiv.style.width = `${width * currentScale}px`;
+                boxDiv.style.height = `${height * currentScale}px`;
                 boxDiv.style.zIndex = "10";
                 boxDiv.style.display = "block";
                 boxDiv.textContent = box.index;
@@ -244,12 +260,15 @@ Promise.all([
                 // 将 box 信息加入 boxElements，供触摸/移动检测使用
                 boxElements.push({
                     element: boxDiv,
-                    x: left,
-                    y: top,
-                    width,
-                    height
+                    x: left / currentScale,
+                    y: top / currentScale,
+                    width: width / currentScale,
+                    height: height / currentScale
                 });
             });
+
+            // ensure image transform and boxes are applied
+            applyScale();
 
             // 鼠标在 image-wrapper 上移动时自动检测 box
             wrapper.addEventListener("mousemove", (e) => {
@@ -260,7 +279,8 @@ Promise.all([
                 let found = false;
 
                 boxElements.forEach(({ element, x: bx, y: by, width, height }) => {
-                    const inside = x >= bx && x <= bx + width && y >= by && y <= by + height;
+                    const inside = x >= bx * currentScale && x <= (bx + width) * currentScale &&
+                                   y >= by * currentScale && y <= (by + height) * currentScale;
                     // 仅在 display 状态变化时更新，减少重绘
                     const desired = inside ? "block" : "none";
                     if (element.style.display !== desired) {
@@ -363,6 +383,105 @@ Promise.all([
             window.dispatchEvent(new Event("dragReady"));
 
         }
+
+        // apply currentScale transform to image and boxes
+        function applyScale() {
+            bgImg.style.transform = `scale(${currentScale})`;
+            bgImg.style.transformOrigin = "top left";
+
+            boxElements.forEach(({ element, x, y, width, height }) => {
+                element.style.left = `${x * currentScale}px`;
+                element.style.top = `${y * currentScale}px`;
+                element.style.width = `${width * currentScale}px`;
+                element.style.height = `${height * currentScale}px`;
+            });
+        }
+
+        // wheel zoom (simple)
+        wrapper.addEventListener("wheel", (e) => {
+            // 这里直接阻止默认滚动，启用缩放
+            e.preventDefault();
+
+            const delta = e.deltaY;
+
+            if (delta < 0) {
+                currentScale = Math.min(currentScale + scaleStep, maxScale);
+            } else {
+                currentScale = Math.max(currentScale - scaleStep, minScale);
+            }
+
+            // keep cursor point approximately stable
+            const rect = bgImg.getBoundingClientRect();
+            const pointerX = e.clientX - rect.left;
+            const pointerY = e.clientY - rect.top;
+
+            const ratioX = pointerX / (rect.width || 1);
+            const ratioY = pointerY / (rect.height || 1);
+
+            applyScale();
+
+            const newRect = bgImg.getBoundingClientRect();
+            const newPointerX = newRect.left + ratioX * newRect.width;
+            const newPointerY = newRect.top + ratioY * newRect.height;
+
+            const dx = (newPointerX - e.clientX);
+            const dy = (newPointerY - e.clientY);
+
+            wrapper.scrollLeft += dx;
+            wrapper.scrollTop += dy;
+        }, { passive: false });
+
+        // drag to pan (mouse)
+        wrapper.addEventListener("mousedown", (e) => {
+            if (e.button !== 0) return;
+            isDragging = true;
+            wrapper.classList.add("dragging");
+            dragStartX = e.clientX;
+            dragStartY = e.clientY;
+            startScrollLeft = wrapper.scrollLeft;
+            startScrollTop = wrapper.scrollTop;
+            e.preventDefault();
+        });
+
+        window.addEventListener("mousemove", (e) => {
+            if (!isDragging) return;
+            const dx = e.clientX - dragStartX;
+            const dy = e.clientY - dragStartY;
+            wrapper.scrollLeft = startScrollLeft - dx;
+            wrapper.scrollTop = startScrollTop - dy;
+        });
+
+        window.addEventListener("mouseup", () => {
+            if (!isDragging) return;
+            isDragging = false;
+            wrapper.classList.remove("dragging");
+        });
+
+        // touch drag for panning
+        wrapper.addEventListener("touchstart", (e) => {
+            if (e.touches.length !== 1) return;
+            isDragging = true;
+            const t = e.touches[0];
+            dragStartX = t.clientX;
+            dragStartY = t.clientY;
+            startScrollLeft = wrapper.scrollLeft;
+            startScrollTop = wrapper.scrollTop;
+        }, { passive: false });
+
+        wrapper.addEventListener("touchmove", (e) => {
+            if (!isDragging || e.touches.length !== 1) return;
+            const t = e.touches[0];
+            const dx = t.clientX - dragStartX;
+            const dy = t.clientY - dragStartY;
+            wrapper.scrollLeft = startScrollLeft - dx;
+            wrapper.scrollTop = startScrollTop - dy;
+            e.preventDefault();
+        }, { passive: false });
+
+        wrapper.addEventListener("touchend", () => {
+            isDragging = false;
+        });
+
         // 添加 resize 监听器（放在 renderBoxes 定义之后）
         window.addEventListener("resize", () => {
             boxElements.forEach(({ element }) => element.remove());
